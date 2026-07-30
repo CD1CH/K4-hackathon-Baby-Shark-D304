@@ -6,6 +6,7 @@ import { Sidebar } from './components/Sidebar'
 import { Toast } from './components/Toast'
 import { TopHeader } from './components/TopHeader'
 import { TutorPanel } from './components/TutorPanel'
+import { VoiceSettingsModal } from './components/VoiceSettingsModal'
 import { documentGroups, documents } from './data/documents'
 import { mockTutorResponse } from './mockTutor'
 import type { AnswerMode, ChatItem, SelectedText, Theme, ToastData } from './types'
@@ -13,8 +14,8 @@ import type { AnswerMode, ChatItem, SelectedText, Theme, ToastData } from './typ
 const id = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 
 function App() {
-  const [selectedDocumentId, setSelectedDocumentId] = useState('tool-calling')
-  const [currentPage, setCurrentPage] = useState(4)
+  const [selectedDocumentId, setSelectedDocumentId] = useState('lecture-8')
+  const [currentPage, setCurrentPage] = useState(1)
   const [zoom, setZoom] = useState(100)
   const [selectedText, setSelectedText] = useState<SelectedText | null>(null)
   const [chatByDocument, setChatByDocument] = useState<Record<string, ChatItem[]>>({})
@@ -26,10 +27,22 @@ function App() {
     if (saved === 'dark' || saved === 'light') return saved
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
-  const [expandedGroups, setExpandedGroups] = useState(new Set(['day04']))
+  const [expandedGroups, setExpandedGroups] = useState(new Set(['slides']))
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [tutorOpen, setTutorOpen] = useState(false)
   const [tutorExpanded, setTutorExpanded] = useState(false)
+  const [autoTTS, setAutoTTS] = useState(true)
+  const [voiceLang, setVoiceLang] = useState('vi-VN')
+  const [voiceSpeed, setVoiceSpeed] = useState(1.0)
+  
+  // Voice Settings state
+  const [voiceType, setVoiceType] = useState<'default' | 'cloned'>('default')
+  const [voice, setVoice] = useState<'male' | 'female'>('female')
+  const [voiceId, setVoiceId] = useState('')
+  const [hasClonedVoice, setHasClonedVoice] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+
+  const activeAudioRef = useRef<HTMLAudioElement | null>(null)
   const responseTimer = useRef<number | null>(null)
   const toastTimer = useRef<number | null>(null)
 
@@ -55,19 +68,89 @@ function App() {
 
   const append = (documentId: string, message: ChatItem) => setChatByDocument((state) => ({ ...state, [documentId]: [...(state[documentId] ?? []), message] }))
 
-  const ask = (question: string, mode: AnswerMode = 'normal', addUser = true) => {
+  const ask = async (question: string, mode: 'normal' | 'simple' | 'current-page-only' = 'normal', addUser = true, options?: { isVoice?: boolean; lang?: string }) => {
     if (!question.trim() || isTyping) return
     const sourceDocument = document
     const sourcePage = currentPage
-    const sourceSelection = selectedText
-    if (addUser) append(document.id, { id: id(), role: 'user', content: question.trim(), timestamp: new Date(), sourcePage })
+    const currentDocumentMessages = messages
+    
+    const userMessage: ChatItem = {
+      id: id(),
+      role: 'user',
+      content: question,
+      timestamp: new Date(),
+      sourcePage
+    }
+    
+    if (addUser) append(sourceDocument.id, userMessage)
+    
     setIsTyping(true)
-    if (responseTimer.current) window.clearTimeout(responseTimer.current)
-    responseTimer.current = window.setTimeout(() => {
-      append(sourceDocument.id, mockTutorResponse(question, sourcePage, sourceSelection, mode, sourceDocument))
+    
+    try {
+      const { askTutorAPI } = await import('./apiService')
+      
+      let finalMessages = [...currentDocumentMessages]
+      if (addUser) finalMessages.push(userMessage)
+      
+      if (selectedText) {
+        finalMessages.push({
+          id: 'temp-selection',
+          role: 'user',
+          content: `Vui lòng tập trung giải thích đoạn này: "${selectedText.text}"`,
+          timestamp: new Date(),
+          sourcePage
+        })
+      }
+      
+      const tutorMessageId = id()
+      append(sourceDocument.id, {
+        id: tutorMessageId,
+        role: 'tutor',
+        content: '',
+        citations: [sourcePage],
+        timestamp: new Date(),
+        answerMode: mode,
+        sourcePage
+      })
+      
+      const apiResponseText = await askTutorAPI(finalMessages, sourceDocument, sourcePage, (fullText) => {
+        updateMessage(tutorMessageId, { content: fullText })
+      })
+      
+      updateMessage(tutorMessageId, { content: apiResponseText })
+      
+      if (autoTTS) {
+        try {
+          if (activeAudioRef.current) activeAudioRef.current.pause()
+          
+          const res = await fetch('http://localhost:8000/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: apiResponseText,
+              lang: voiceLang.includes('en') ? 'en' : 'vi',
+              voice: voice,
+              voice_id: voiceType === 'cloned' ? voiceId : null
+            })
+          })
+          if (res.ok) {
+            const blob = await res.blob()
+            const url = URL.createObjectURL(blob)
+            const audio = new Audio(url)
+            activeAudioRef.current = audio
+            audio.onended = () => URL.revokeObjectURL(url)
+            audio.onerror = () => URL.revokeObjectURL(url)
+            audio.play()
+          }
+        } catch (err) {
+          console.error('Failed to auto-play TTS', err)
+        }
+      }
+    } catch (e) {
+      notify('Lỗi kết nối tới AI Tutor.', 'error')
+    } finally {
       setIsTyping(false)
-      responseTimer.current = null
-    }, 950)
+    }
   }
 
   const questionFor = (message: ChatItem) => {
@@ -116,10 +199,43 @@ function App() {
       header={<TopHeader document={document} theme={theme} onToggleTheme={() => setTheme((value) => value === 'light' ? 'dark' : 'light')} onOpenSidebar={() => setSidebarOpen(true)} onOpenTutor={() => setTutorOpen(true)} />}
       sidebar={<Sidebar groups={documentGroups} selectedId={document.id} expandedGroups={expandedGroups} onToggleGroup={(groupId) => setExpandedGroups((state) => { const next = new Set(state); next.has(groupId) ? next.delete(groupId) : next.add(groupId); return next })} onSelect={selectDocument} onClose={() => setSidebarOpen(false)} />}
       viewer={<DocumentViewer document={document} currentPage={currentPage} zoom={zoom} selectedText={selectedText} onPageChange={changePage} onZoomChange={setZoom} onSelectText={(selection) => { setSelectedText(selection); setCurrentPage(selection.pageNumber) }} onClearSelection={() => setSelectedText(null)} onAskSelected={() => { setTutorOpen(true); ask('Giải thích đoạn vừa chọn') }} onNotify={notify} />}
-      tutor={<TutorPanel document={document} documents={documents} currentPage={currentPage} selectedText={selectedText} messages={messages} isTyping={isTyping} expanded={tutorExpanded} onToggleExpanded={() => setTutorExpanded((value) => !value)} onClose={() => setTutorOpen(false)} onClearChat={() => { if (!messages.length) notify('Tài liệu này chưa có lịch sử.', 'info'); else { setChatByDocument((state) => ({ ...state, [document.id]: [] })); notify('Đã xóa lịch sử tài liệu hiện tại.') } }} onClearSelection={() => setSelectedText(null)} onSelectSource={selectSource} onSend={(question) => ask(question)} onCitation={(page) => { changePage(page); setTutorOpen(false); notify(`Đã mở nguồn tại Trang ${page}.`, 'info') }} onSimplify={(message) => ask(questionFor(message), 'simple', false)} onPageOnly={(message) => ask(questionFor(message), 'current-page-only', false)} onCopy={async (message) => { await navigator.clipboard.writeText(message.content); notify('Đã sao chép câu trả lời.') }} onLike={(message) => { updateMessage(message.id, { feedback: { type: 'like' } }); notify('Cảm ơn bạn đã phản hồi.') }} onDislike={(message) => setFeedbackTarget(message.id)} />}
+      tutor={<TutorPanel document={document} documents={documents} currentPage={currentPage} selectedText={selectedText} messages={messages} isTyping={isTyping} expanded={tutorExpanded} onToggleExpanded={() => setTutorExpanded((value) => !value)} onClose={() => setTutorOpen(false)} onClearChat={() => { if (!messages.length) notify('Tài liệu này chưa có lịch sử.', 'info'); else { setChatByDocument((state) => ({ ...state, [document.id]: [] })); notify('Đã xóa lịch sử tài liệu hiện tại.') } }} onClearSelection={() => setSelectedText(null)} onSelectSource={selectSource} onSend={(question, options) => ask(question, 'normal', true, options)} onCitation={(page) => { changePage(page); setTutorOpen(false); notify(`Đã mở nguồn tại Trang ${page}.`, 'info') }} onSimplify={(message) => ask(questionFor(message), 'simple', false)} onPageOnly={(message) => ask(questionFor(message), 'current-page-only', false)} onCopy={async (message) => { await navigator.clipboard.writeText(message.content); notify('Đã sao chép câu trả lời.') }} onLike={(message) => { updateMessage(message.id, { feedback: { type: 'like' } }); notify('Cảm ơn bạn đã phản hồi.') }} onDislike={(message) => setFeedbackTarget(message.id)} onNotify={notify} autoTTS={autoTTS} onToggleAutoTTS={() => setAutoTTS(v => { const next = !v; if (!next && activeAudioRef.current) activeAudioRef.current.pause(); return next; })} voiceLang={voiceLang} onChangeVoiceLang={setVoiceLang} voiceSpeed={voiceSpeed} onChangeVoiceSpeed={setVoiceSpeed} onOpenSettings={() => setIsSettingsOpen(true)} onReadMessage={async (text) => {
+        try {
+          if (activeAudioRef.current) activeAudioRef.current.pause();
+          window.dispatchEvent(new Event('speech-end'));
+          const res = await fetch('http://localhost:8000/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text,
+              lang: voiceLang.includes('en') ? 'en' : 'vi',
+              voice,
+              voice_id: voiceType === 'cloned' ? voiceId : null
+            })
+          });
+          if (res.ok) {
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            activeAudioRef.current = audio;
+            audio.onended = () => { URL.revokeObjectURL(url); window.dispatchEvent(new Event('speech-end')); };
+            audio.onerror = () => { URL.revokeObjectURL(url); window.dispatchEvent(new Event('speech-end')); };
+            audio.play();
+          }
+        } catch (err) { console.error('Failed to play audio manually', err); window.dispatchEvent(new Event('speech-end')); }
+      }} />}
     />
     <FeedbackModal isOpen={Boolean(feedbackTarget)} onClose={() => setFeedbackTarget(null)} onSubmit={submitFeedback} />
     <Toast toast={toast} onClose={() => setToast(null)} />
+    <VoiceSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        voiceType={voiceType} setVoiceType={setVoiceType}
+        voice={voice} setVoice={setVoice}
+        voiceId={voiceId} setVoiceId={setVoiceId}
+        hasClonedVoice={hasClonedVoice} setHasClonedVoice={setHasClonedVoice}
+        language={voiceLang.includes('en') ? 'en' : 'vi'}
+      />
   </>
 }
 

@@ -3,9 +3,11 @@ import sys
 from pathlib import Path
 from pydantic import BaseModel
 from typing import List, Optional, Dict
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 import pypdf
+import base64
+import httpx
 
 # Set up paths
 BACKEND_DIR = Path(__file__).parent.resolve()
@@ -29,6 +31,18 @@ class ChatRequest(BaseModel):
     pdf_name: Optional[str] = None
     slide_text: Optional[str] = None
     current_page: Optional[int] = None
+
+class VoiceCloneRequest(BaseModel):
+    audio: str
+    ref_text: str
+
+class TtsRequest(BaseModel):
+    text: str
+    voice_id: Optional[str] = None
+    voice: Optional[str] = 'female'
+    lang: Optional[str] = 'vi'
+
+TTS_BASE_URL = "http://localhost:8002"
 
 def extract_text_from_pdf(pdf_path: Path) -> str:
     """Đọc và trích xuất nội dung từ file PDF"""
@@ -105,6 +119,38 @@ NỘI DUNG SLIDE:
             return {"text": response.text or ""}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/voice/clone")
+async def voice_clone(req: VoiceCloneRequest):
+    try:
+        async with httpx.AsyncClient(timeout=180.0) as client:
+            resp = await client.post(
+                f"{TTS_BASE_URL}/tts/voice",
+                files={"ref_audio": ("ref.wav", base64.b64decode(req.audio), "audio/wav")},
+                data={"ref_text": req.ref_text},
+            )
+            resp.raise_for_status()
+            return {"voice_id": resp.json().get("voice_id")}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Lỗi tạo voice clone: {e}")
+
+@app.post("/api/tts")
+async def tts(req: TtsRequest):
+    try:
+        async with httpx.AsyncClient(timeout=180.0) as client:
+            if req.voice_id:
+                payload = {"voice_id": req.voice_id, "text": req.text, "num_step": 32, "speed": 1.0}
+                path = "/tts/synthesize"
+            else:
+                instruct = req.voice
+                payload = {"text": req.text, "num_step": 32, "speed": 1.0, "instruct": instruct}
+                path = "/tts/design"
+            
+            resp = await client.post(f"{TTS_BASE_URL}{path}", json=payload)
+            resp.raise_for_status()
+            return Response(content=resp.content, media_type="audio/wav")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Lỗi TTS: {type(e).__name__}: {e}")
 
 if __name__ == "__main__":
     import uvicorn

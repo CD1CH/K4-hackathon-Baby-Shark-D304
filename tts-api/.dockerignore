@@ -1,0 +1,7 @@
+__pycache__
+*.pyc
+*.pyo
+.git
+.claude
+uploads/
+app/tts/.hf_cache/

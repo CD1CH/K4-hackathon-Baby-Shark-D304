@@ -94,21 +94,18 @@ const createDocument = (id: string, name: string, totalPages: number): TutorDocu
 })
 
 export const documents: TutorDocument[] = [
-  createDocument('basic', 'day04-prompt-engineering-basic.pdf', 43),
-  createDocument('example', 'day04-prompt-engineering-example.pdf', 78),
-  createDocument('tool-calling', 'day04-prompt-engineering-tool-calling.pdf', 98)
+  createDocument('lecture-8', 'Lecture 8.Random Bit Generation and Stream Ciphers.pdf', 23),
+  createDocument('d1-slide', 'd1-slide-hackathon.pdf', 29),
+  createDocument('d2-slide', 'd2-slide-hackathon.pdf', 29)
 ]
 
 export const documentGroups: DocumentGroupData[] = [
-  { id: 'day01', name: 'Day01', meta: '2 tài liệu · Published', documents: [] },
-  { id: 'day02', name: 'Day02', meta: '1 tài liệu · Published', documents: [] },
-  { id: 'day03', name: 'Day03', meta: '2 tài liệu · Published', documents: [] },
-  { id: 'day04', name: 'Day04', meta: '3 tài liệu · Published', documents }
+  { id: 'slides', name: 'Bài giảng', meta: '3 tài liệu', documents }
 ]
 
 export const suggestedQuestions = [
-  'Tóm tắt trang này',
-  'Giải thích nội dung chính',
+  'Tôi đang ở trang mấy?',
+  'Giải thích nội dung chính của bài này',
   'Cho ví dụ dễ hiểu',
   'Điểm nào cần ghi nhớ?',
   'Tạo 3 câu hỏi ôn tập'
@@ -128,12 +125,12 @@ export function getDocumentPage(document: TutorDocument, pageNumber: number): Do
     pageNumber,
     eyebrow: 'NỘI DUNG BÀI GIẢNG',
     title: `Trang ${pageNumber}: Nội dung mở rộng`,
-    subtitle: 'Trang mô phỏng cho prototype',
+    subtitle: document.name,
     accent: pageNumber % 2 ? 'blue' : 'cyan',
     blocks: [{
       id: `fallback-${pageNumber}`,
-      heading: 'Chưa nạp nội dung chi tiết',
-      text: 'Tutor chỉ trả lời dựa trên nội dung có sẵn và sẽ nói rõ khi trang hiện tại chưa đủ căn cứ.'
+      heading: 'Nội dung',
+      text: 'Đang hiển thị PDF thực tế. Vui lòng đặt câu hỏi ở khung bên cạnh.'
     }]
   }
 }
