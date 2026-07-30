@@ -19,6 +19,35 @@ def extract_text_from_pdf(pdf_path: Path) -> str:
             text += extracted + "\n"
     return text
 
+def get_voice_input() -> str:
+    try:
+        import speech_recognition as sr
+    except ImportError:
+        print("Vui lòng cài đặt thư viện: pip install SpeechRecognition pyaudio")
+        return ""
+        
+    r = sr.Recognizer()
+    try:
+        with sr.Microphone() as source:
+            print("\n[AI] Đang nghe... Hãy nói gì đó (Vui lòng nói rõ ràng):")
+            r.adjust_for_ambient_noise(source, duration=0.5)
+            audio = r.listen(source, timeout=5, phrase_time_limit=15)
+            print("[AI] Đang nhận diện giọng nói...")
+            
+            # Sử dụng Google Speech Recognition (mặc định ưu tiên tiếng Việt)
+            text = r.recognize_google(audio, language='vi-VN')
+            print(f"[Giọng nói] Học sinh: {text}")
+            return text
+    except sr.WaitTimeoutError:
+        print("[Lỗi] Không nghe thấy âm thanh nào.")
+    except sr.UnknownValueError:
+        print("[Lỗi] Không thể nhận diện được giọng nói.")
+    except sr.RequestError as e:
+        print(f"[Lỗi] Không thể kết nối tới dịch vụ nhận diện: {e}")
+    except Exception as e:
+        print(f"[Lỗi] {e}")
+    return ""
+
 def main():
     # Load environment variables (API keys)
     load_lab_env(BACKEND_DIR)
@@ -70,7 +99,7 @@ def main():
         print("Cảnh báo: Không trích xuất được văn bản nào từ file PDF này.")
         
     print("\nĐã tải slide thành công! Bạn có thể bắt đầu đặt câu hỏi.")
-    print("Gõ 'exit' hoặc 'quit' để thoát.\n")
+    print("Gõ 'exit' hoặc 'quit' để thoát. Gõ 'v' để dùng Nhập liệu Giọng nói.\n")
     
     system_prompt = f"""Bạn là một trợ giảng AI xuất sắc, nhiệm vụ của bạn là hỗ trợ học sinh học tập dựa trên nội dung slide bài giảng được cung cấp.
 
@@ -92,6 +121,12 @@ NỘI DUNG SLIDE:
     while True:
         try:
             user_input = input("Học sinh: ")
+            
+            if user_input.strip().lower() == 'v':
+                user_input = get_voice_input()
+                if not user_input.strip():
+                    continue
+            
             if user_input.strip().lower() in ['exit', 'quit']:
                 break
             if not user_input.strip():

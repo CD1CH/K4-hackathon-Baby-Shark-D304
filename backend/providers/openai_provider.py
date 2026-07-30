@@ -57,3 +57,32 @@ class OpenAIProvider:
             args = json.loads(call.function.arguments or "{}")
             calls.append(ToolCall(name=call.function.name, args=args))
         return ModelResponse(text=msg.content, tool_calls=calls, raw=resp)
+
+    def stream(
+        self,
+        messages: list[dict[str, str]],
+        *,
+        model: str | None = None,
+        temperature: float = 0.0,
+    ) -> Any:
+        try:
+            from openai import OpenAI
+        except ImportError as exc:
+            raise RuntimeError("Install live provider dependency first: pip install openai") from exc
+
+        api_key = os.getenv(self.api_key_env)
+        if not api_key:
+            raise RuntimeError(f"Missing API key env var: {self.api_key_env}")
+
+        client = OpenAI(api_key=api_key, base_url=self.base_url)
+        kwargs: dict[str, Any] = {
+            "model": model or self.default_model,
+            "messages": messages,
+            "temperature": temperature,
+            "stream": True,
+        }
+
+        resp = client.chat.completions.create(**kwargs)
+        for chunk in resp:
+            if chunk.choices and chunk.choices[0].delta.content is not None:
+                yield chunk.choices[0].delta.content
