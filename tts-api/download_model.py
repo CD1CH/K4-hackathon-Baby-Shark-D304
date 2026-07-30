@@ -18,8 +18,9 @@ def download():
     # ── TTS: OmniVoice Vietnamese ────────────────────────────────────────────
     tts_dir = APP_DIR / "tts" / "checkpoints" / "splendor1811" / "omnivoice-vietnamese"
     audio_tok_dir = tts_dir / "audio_tokenizer"
-    if (tts_dir / "model.safetensors").exists() and audio_tok_dir.is_dir():
-        print("[1/1] OmniVoice TTS model already exists, skipping.")
+    tts_mlx_dir = APP_DIR / "tts" / "checkpoints" / "splendor1811" / "omnivoice-vietnamese-mlx"
+    if (tts_mlx_dir / "model.safetensors").exists() and audio_tok_dir.is_dir():
+        print("[1/1] OmniVoice MLX TTS model already exists, skipping.")
     else:
         tts_dir.mkdir(parents=True, exist_ok=True)
         print("[1/1] Downloading OmniVoice Vietnamese TTS model...")
@@ -28,6 +29,7 @@ def download():
             local_dir=str(tts_dir),
             local_dir_use_symlinks=False,
         )
+        print(f"      → {tts_dir}")
         print(f"      → {tts_dir}")
         if not (audio_tok_dir / "model.safetensors").exists():
             print("[1/1] Downloading HiggsAudio tokenizer (OmniVoice dependency)...")
@@ -38,6 +40,18 @@ def download():
                 local_dir_use_symlinks=False,
             )
             print(f"      → {audio_tok_dir}")
+            
+        print("[1/1] Converting PyTorch weights to MLX...")
+        import subprocess
+        import sys
+        subprocess.run([
+            sys.executable, 
+            str(APP_DIR / "tts" / "omnivoice" / "mlx" / "convert_mlx.py"),
+            "--source", str(tts_dir),
+            "--output", str(tts_mlx_dir),
+            "--copy-mode", "copy"
+        ], check=True)
+        print(f"      → {tts_mlx_dir}")
 
     print("\nAll models ready.")
 

@@ -22,3 +22,4 @@ huggingface_hub>=0.22.0
 pydub
 soundfile
 tqdm
+mlx>=0.27.0

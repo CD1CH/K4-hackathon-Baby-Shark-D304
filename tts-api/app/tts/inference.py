@@ -17,6 +17,13 @@ elif torch.backends.mps.is_available():
 else:
     DEVICE = "cpu"
 
+USE_MLX = False
+try:
+    import mlx.core as mx
+    USE_MLX = True
+except ImportError:
+    pass
+
 
 # Cloned voice prompts are tokenized reference audio held on the GPU box for
 # reuse. Unbounded, they only ever grow: this process runs for days, so every
@@ -42,31 +49,45 @@ class TTSEngine:
             self._load()
 
     def _load(self):
-        from omnivoice import OmniVoice
-        # Prefer local checkpoint if downloaded
-        local = HERE / "checkpoints" / MODEL_ID
-        path  = str(local) if (local / "model.safetensors").exists() else MODEL_ID
-        print(f"[tts] Loading OmniVoice from {path}...")
-        self._model = OmniVoice.from_pretrained(path, device_map=DEVICE, dtype=torch.float16)
+        # Prefer MLX model if available
+        local_mlx = HERE / "checkpoints" / "splendor1811" / "omnivoice-vietnamese-mlx"
+        if USE_MLX and (local_mlx / "model.safetensors").exists():
+            from omnivoice.mlx import OmniVoiceMLX
+            path = str(local_mlx)
+            print(f"[tts] Loading OmniVoice MLX from {path}...")
+            self._model = OmniVoiceMLX.from_pretrained(path)
+            self._is_mlx = True
+        else:
+            from omnivoice import OmniVoice
+            # Prefer local checkpoint if downloaded
+            local = HERE / "checkpoints" / MODEL_ID
+            path  = str(local) if (local / "model.safetensors").exists() else MODEL_ID
+            print(f"[tts] Loading OmniVoice from {path}...")
+            self._model = OmniVoice.from_pretrained(path, device_map=DEVICE, dtype=torch.float16)
+            self._is_mlx = False
         print("[tts] Ready.")
 
-    def _to_wav_bytes(self, audio: torch.Tensor) -> bytes:
-        audio = audio.detach().cpu().to(torch.float32)
-        if torch.isnan(audio).any() or torch.isinf(audio).any():
-            audio = torch.nan_to_num(audio, nan=0.0, posinf=1.0, neginf=-1.0)
+    def _to_wav_bytes(self, audio) -> bytes:
+        import numpy as np
+        if isinstance(audio, torch.Tensor):
+            audio = audio.detach().cpu().to(torch.float32).numpy()
+            
+        if np.isnan(audio).any() or np.isinf(audio).any():
+            audio = np.nan_to_num(audio, nan=0.0, posinf=1.0, neginf=-1.0)
+            
         if audio.ndim == 1:
-            audio = audio.unsqueeze(0)
+            audio = np.expand_dims(audio, 0)
         elif audio.ndim > 2:
-            audio = audio.squeeze()
+            audio = np.squeeze(audio)
             if audio.ndim == 1:
-                audio = audio.unsqueeze(0)
+                audio = np.expand_dims(audio, 0)
         audio = audio - audio.mean()
-        peak = torch.abs(audio).max()
+        peak = np.abs(audio).max()
         if peak > 0:
-            audio = audio * (0.95 / peak)
+            audio = audio / peak * 0.95
         import soundfile as sf
         buf = io.BytesIO()
-        sf.write(buf, audio.numpy().T, self._model.sampling_rate, format='WAV', subtype='PCM_16')
+        sf.write(buf, audio.T, self._model.sampling_rate, format='WAV', subtype='PCM_16')
         buf.seek(0)
         return buf.read()
 

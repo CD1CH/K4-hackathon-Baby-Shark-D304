@@ -64,6 +64,8 @@ def _wav_response(wav_bytes: bytes) -> StreamingResponse:
     )
 
 async def _run(fn, *args, **kwargs):
+    if getattr(engine, "_is_mlx", False):
+        return fn(*args, **kwargs)
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(executor, lambda: fn(*args, **kwargs))
 
