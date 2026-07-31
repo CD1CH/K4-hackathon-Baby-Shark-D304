@@ -13,20 +13,27 @@ import type { AnswerMode, ChatItem, SelectedText, Theme, ToastData } from './typ
 const id = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 
 function App() {
-  const [selectedDocumentId, setSelectedDocumentId] = useState('tool-calling')
-  const [currentPage, setCurrentPage] = useState(4)
+  const [selectedDocumentId, setSelectedDocumentId] = useState('d1-slide-hackathon')
+  const [currentPage, setCurrentPage] = useState(1)
   const [zoom, setZoom] = useState(100)
   const [selectedText, setSelectedText] = useState<SelectedText | null>(null)
-  const [chatByDocument, setChatByDocument] = useState<Record<string, ChatItem[]>>({})
+  const [chatByDocument, setChatByDocument] = useState<Record<string, ChatItem[]>>(() => {
+    try {
+      const saved = window.localStorage.getItem('vlearn-chat-history')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (typeof parsed === 'object' && parsed !== null) return parsed
+      }
+    } catch {
+      // ignore
+    }
+    return {}
+  })
   const [isTyping, setIsTyping] = useState(false)
   const [feedbackTarget, setFeedbackTarget] = useState<string | null>(null)
   const [toast, setToast] = useState<ToastData | null>(null)
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = window.localStorage.getItem('vlearn-theme')
-    if (saved === 'dark' || saved === 'light') return saved
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  })
-  const [expandedGroups, setExpandedGroups] = useState(new Set(['day01', 'day02', 'day04']))
+  const [theme, setTheme] = useState<Theme>('light')
+  const [expandedGroups, setExpandedGroups] = useState(new Set(['day01', 'day02', 'lecture08']))
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [tutorOpen, setTutorOpen] = useState(false)
   const [tutorExpanded, setTutorExpanded] = useState(false)
@@ -36,6 +43,14 @@ function App() {
   const document = useMemo(() => documents.find((item) => item.id === selectedDocumentId) ?? documents[0], [selectedDocumentId])
   if (!document) throw new Error('Prototype cần ít nhất một tài liệu mock.')
   const messages = chatByDocument[document.id] ?? []
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('vlearn-chat-history', JSON.stringify(chatByDocument))
+    } catch {
+      // ignore
+    }
+  }, [chatByDocument])
 
   useEffect(() => {
     window.document.documentElement.classList.toggle('dark', theme === 'dark')

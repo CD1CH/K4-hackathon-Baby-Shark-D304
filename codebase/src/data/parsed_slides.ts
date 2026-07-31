@@ -3,7 +3,7 @@ import type { DocumentPage } from '../types'
 export const d1Pages: DocumentPage[] = [
   {
     "pageNumber": 1,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 1",
     "title": "AI IN ACTION  Day 1",
     "subtitle": "AI & LLM Foundation",
     "accent": "blue",
@@ -22,7 +22,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 2,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 2",
     "title": "AI IN ACTION  Day 1",
     "subtitle": "Agenda",
     "accent": "cyan",
@@ -46,7 +46,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 3,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 3",
     "title": "AI, ML, Deep Learning, GenAI, LLM — nằm ở đâu trong cùng một hệ?",
     "subtitle": "AI — chiếc ô lớn nhất: mọi hệ thống có yếu tố",
     "accent": "blue",
@@ -70,7 +70,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 4,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 4",
     "title": "Discriminative AI",
     "subtitle": "Giỏi phân loại, dự đoán: lọc spam, phát",
     "accent": "cyan",
@@ -109,7 +109,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 5,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 5",
     "title": "Lịch sử AI 70 năm",
     "subtitle": "Khai sinh, lời hứa đầu",
     "accent": "blue",
@@ -128,7 +128,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 6,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 6",
     "title": "1980: Hệ chuyên gia (expert system)",
     "subtitle": "Đặt lại vấn đề: \"Nếu AI chỉ giải thật tốt một loại bài toán chuyên môn hẹp thì sao?\"",
     "accent": "cyan",
@@ -152,7 +152,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 7,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 7",
     "title": "2009: Fei-Fei Li và ImageNet — cuộc cách mạng của dữ liệu",
     "subtitle": "Trong khi cả ngành chạy theo thuật toán thông minh hơn, Fei-Fei Li chọn con đường khác: xây bộ",
     "accent": "blue",
@@ -171,7 +171,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 8,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 8",
     "title": "2017: Transformer",
     "subtitle": "Transformer là bước ngoặt vì nó cho mô hình hiểu ngôn ngữ theo",
     "accent": "cyan",
@@ -190,7 +190,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 9,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 9",
     "title": "2022: ChatGPT",
     "subtitle": "ChatGPT xuất hiện như một trải nghiệm đại chúng",
     "accent": "blue",
@@ -209,7 +209,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 10,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 10",
     "title": "1 model nền",
     "subtitle": "LLM",
     "accent": "cyan",
@@ -228,7 +228,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 11,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 11",
     "title": "Bên trong Transformer: đầu ra luôn là một phân bố xác suất",
     "subtitle": "Với mọi ngữ cảnh, model chấm điểm MỌI từ trong từ vựng — “landˮ 22%, “forestˮ 9%… — rồi chọn theo xác suất đó",
     "accent": "blue",
@@ -247,7 +247,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 12,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 12",
     "title": "Sinh văn bản = đoán → nối vào câu → đoán tiếp",
     "subtitle": "Mỗi token mới được nối vào ngữ cảnh, rồi model chạy lại từ đầu — vòng lặp predict → append → rerun",
     "accent": "cyan",
@@ -266,7 +266,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 13,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 13",
     "title": "Token: model không đọc \"từ\", model đọc mảnh chữ",
     "subtitle": "Model không nhìn từ nguyên vẹn. Nó cắt văn bản",
     "accent": "blue",
@@ -285,7 +285,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 14,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 14",
     "title": "Context: bàn làm việc có hạn của model",
     "subtitle": "Mỗi lần trả lời, model chỉ nhìn được một lượng chữ có",
     "accent": "cyan",
@@ -304,7 +304,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 15,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 15",
     "title": "Attention: mỗi từ được “nhìn sangˮ những từ quan trọng khác",
     "subtitle": "Thay vì đọc tuần tự từng chữ, cơ chế attention cho phép mỗi token:",
     "accent": "blue",
@@ -323,7 +323,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 16,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 16",
     "title": "1 Đặt điều quan trọng đầu – cuối",
     "subtitle": "Đầu và cuối prompt được chú ý nhiều",
     "accent": "cyan",
@@ -357,7 +357,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 17,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 17",
     "title": "2020  GPT3",
     "subtitle": "175 tỷ",
     "accent": "blue",
@@ -386,7 +386,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 18,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 18",
     "title": "LLM được tạo ra như thế nào? — đọc nhiều, được chỉ, được uốn nắn, luyện đề",
     "subtitle": "① Pre-training — \"đọc cả thư viện\": học tiếng nói và kiến thức từ hàng nghìn tỷ token. ② SFT — \"được chỉ cách trả",
     "accent": "cyan",
@@ -405,7 +405,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 19,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 19",
     "title": "RLHF: ba bước uốn cỗ máy đoán token thành trợ lý biết nghe lời",
     "subtitle": "① Model viết nhiều câu trả lời",
     "accent": "blue",
@@ -424,7 +424,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 20,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 20",
     "title": "Bong bóng thời gian",
     "subtitle": "Model bị \"đóng băng\" tại ngày ngừng đọc.",
     "accent": "cyan",
@@ -463,7 +463,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 21,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 21",
     "title": "1 Phân loại spam",
     "subtitle": "Model thực chất đã học:",
     "accent": "blue",
@@ -492,7 +492,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 22,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 22",
     "title": "Bài toán: \"Có 5 quả bóng tennis. Mua thêm 2 hộp, mỗi hộp 3 quả. Hỏi tổng cộng có bao nhiêu quả?\"",
     "subtitle": "Không có nháp — trả lời ngay",
     "accent": "cyan",
@@ -516,7 +516,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 23,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 23",
     "title": "Từ LLM đến agent: bốn mức độ — mỗi bậc thêm một năng lực",
     "subtitle": "LEVEL 0",
     "accent": "blue",
@@ -535,7 +535,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 24,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 24",
     "title": "Giải phẫu một agent: 5 bộ phận là một vòng lặp",
     "subtitle": "vòng lặp",
     "accent": "cyan",
@@ -554,7 +554,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 25,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 25",
     "title": "Cùng một mức năng lực, giá rơi khoảng 10 lần mỗi năm",
     "subtitle": "Việc năm ngoái phải dùng model đắt nhất — năm nay model rẻ đã làm được",
     "accent": "blue",
@@ -573,7 +573,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 26,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 26",
     "title": "Chọn model theo TẦNG, không chọn theo tên",
     "subtitle": "VIỆC CỦA BẠN TẦNG MODEL",
     "accent": "cyan",
@@ -612,7 +612,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 27,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 27",
     "title": "Token có giá: vé vào rẻ, vé ra đắt gấp 3–5 lần",
     "subtitle": "VÉ VÀO — INPUT",
     "accent": "blue",
@@ -631,7 +631,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 28,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 28",
     "title": "Giải phẫu một prompt: bốn lớp xếp chồng",
     "subtitle": "LỚP 1",
     "accent": "cyan",
@@ -660,7 +660,7 @@ export const d1Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 29,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D1-SLIDE-HACKATHON · PAGE 29",
     "title": "Hai núm vặn chọn từ: temperature & top_p",
     "subtitle": "temperature — “núm vặn độ liềuˮ",
     "accent": "blue",
@@ -692,7 +692,7 @@ export const d1Pages: DocumentPage[] = [
 export const d2Pages: DocumentPage[] = [
   {
     "pageNumber": 1,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 1",
     "title": "AI IN ACTION · DAY 02",
     "subtitle": "Xác định bài toán cho AI.",
     "accent": "blue",
@@ -711,7 +711,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 2,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 2",
     "title": "SÁNG",
     "subtitle": "KHUNG LÝ THUYẾT 4H",
     "accent": "cyan",
@@ -750,7 +750,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 3,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 3",
     "title": "DIAMOND 1 — TÌM ĐÚNG VẤN ĐỀ",
     "subtitle": "Discover: Mở rộng — khảo sát vấn đề căn bản.",
     "accent": "blue",
@@ -784,7 +784,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 4,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 4",
     "title": "DISCOVER · PHÂN KỲ",
     "subtitle": "Khám phá / mở rộng góc nhìn",
     "accent": "cyan",
@@ -818,7 +818,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 5,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 5",
     "title": "CURSOR",
     "subtitle": "\"Lệch năng lực cốt lõi\"",
     "accent": "blue",
@@ -852,7 +852,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 6,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 6",
     "title": "REPETITIVE",
     "subtitle": "Tác vụ lặp lại",
     "accent": "cyan",
@@ -881,7 +881,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 7,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 7",
     "title": "Ưu tiên giải pháp Solution-first)",
     "subtitle": "Xây dựng chatbot/agent trước khi làm rõ quy trình vận hành và điểm",
     "accent": "blue",
@@ -920,7 +920,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 8,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 8",
     "title": "PAIR · CHƯƠNG 1 — REFRAME CÂU HỎI",
     "subtitle": "\"Can we use AI to ______?\"",
     "accent": "cyan",
@@ -939,7 +939,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 9,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 9",
     "title": "Bài toán 1 câu  problem Vấn đề cụ thể cần giải quyết (không bao gồm giải pháp).",
     "subtitle": "Đối tượng ảnh hưởng  actor Cá nhân hoặc bộ phận chịu tác động trực tiếp từ vấn đề.",
     "accent": "blue",
@@ -963,7 +963,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 10,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 10",
     "title": "01",
     "subtitle": "Quy trình hiện tại như thế nào?",
     "accent": "cyan",
@@ -1007,7 +1007,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 11,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 11",
     "title": "01 · BASELINE",
     "subtitle": "Hiện trạng / where we are",
     "accent": "blue",
@@ -1056,7 +1056,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 12,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 12",
     "title": "OUTPUT METRIC",
     "subtitle": "Kết quả cuối cùng / what we optimize",
     "accent": "cyan",
@@ -1085,7 +1085,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 13,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 13",
     "title": "BƯỚC ①",
     "subtitle": "Giao điểm: nhu cầu × thế mạnh",
     "accent": "blue",
@@ -1129,7 +1129,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 14,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 14",
     "title": "Gợi ý theo từng người · recommendation",
     "subtitle": "Mỗi người dùng nhận một nội dung gợi ý khác nhau.",
     "accent": "cyan",
@@ -1188,7 +1188,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 15,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 15",
     "title": "Cần duy trì tính dự đoán được",
     "subtitle": "Nút Home / Cancel phải luôn nằm ở một chỗ quen thuộc — người dùng",
     "accent": "blue",
@@ -1242,7 +1242,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 16,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 16",
     "title": "MODEL",
     "subtitle": "Tư duy & Sáng tạo",
     "accent": "cyan",
@@ -1276,7 +1276,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 17,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 17",
     "title": "AUTOMATE",
     "subtitle": "AI làm thay",
     "accent": "blue",
@@ -1315,7 +1315,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 18,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 18",
     "title": "CẤP ĐỘ 1",
     "subtitle": "Rule / Script",
     "accent": "cyan",
@@ -1349,7 +1349,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 19,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 19",
     "title": "CẤP ĐỘ 1 — RULE (LUẬT TĨNH)",
     "subtitle": "Trả lời tự động",
     "accent": "blue",
@@ -1393,7 +1393,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 20,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 20",
     "title": "1. Prompt Chaining",
     "subtitle": "In → LLM Call 1→ Gate → LLM Call 2→ LLM Call 3→ Out",
     "accent": "cyan",
@@ -1432,7 +1432,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 21,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 21",
     "title": "Cây quyết định: Lựa chọn cấp độ giải pháp",
     "subtitle": "— Từ bài toán cốt lõi đến lựa chọn Rule, Workflow hay Agent",
     "accent": "blue",
@@ -1451,7 +1451,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 22,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 22",
     "title": "Reward function là công thức quyết định đâu là dự đoán \"đúng\", đâu là \"sai\" — và chính nó định hình trải nghiệm người dùng cuối. Vì vậy",
     "subtitle": "nó phải được thiết kế liên chức năng: tối thiểu UX  Product × Engineering cùng ngồi lại.",
     "accent": "cyan",
@@ -1490,7 +1490,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 23,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 23",
     "title": "PRECISION CAO",
     "subtitle": "TP / (TP + FP)",
     "accent": "blue",
@@ -1529,7 +1529,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 24,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 24",
     "title": "TEMPLATE CỦA PAIR",
     "subtitle": "If {chỉ số cụ thể} for {tính năng AI} {drops below / goes above} {ngưỡng có nghĩa}, we will",
     "accent": "cyan",
@@ -1558,7 +1558,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 25,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 25",
     "title": "01 · BASELINE",
     "subtitle": "Thiết lập đối chứng",
     "accent": "blue",
@@ -1577,7 +1577,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 26,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 26",
     "title": "01 · INPUT",
     "subtitle": "Problem Statement",
     "accent": "cyan",
@@ -1611,7 +1611,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 27,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 27",
     "title": "6 YẾU TỐ BÀI TOÁN CỐT LÕI",
     "subtitle": "Actor đối tượng ảnh hưởng Đối tượng trực tiếp chịu ảnh hưởng bởi vấn đề.",
     "accent": "blue",
@@ -1640,7 +1640,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 28,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 28",
     "title": "✓ Go",
     "subtitle": "thực hiện",
     "accent": "cyan",
@@ -1659,7 +1659,7 @@ export const d2Pages: DocumentPage[] = [
   },
   {
     "pageNumber": 29,
-    "eyebrow": "SLIDE BÀI GIẢNG",
+    "eyebrow": "D2-SLIDE-HACKATHON · PAGE 29",
     "title": "01 Brief mơ hồ không thay thế Problem Statement.",
     "subtitle": "Một bản tóm tắt mơ hồ không thể thay thế cho một Problem Statement hoàn chỉnh.",
     "accent": "blue",
@@ -1678,6 +1678,511 @@ export const d2Pages: DocumentPage[] = [
         "id": "p29-2",
         "heading": "AI IN ACTION - HACKATHON",
         "text": "01 Brief mơ hồ không thay thế Problem Statement."
+      }
+    ]
+  }
+]
+
+export const lecture8Pages: DocumentPage[] = [
+  {
+    "pageNumber": 1,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 1",
+    "title": "1",
+    "subtitle": "Introduction to Cryptography",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p1-0",
+        "heading": "Introduction to Cryptography",
+        "text": "Lecture 8. Random Bit Generation and Stream"
+      },
+      {
+        "id": "p1-1",
+        "heading": "Department of Computer Science",
+        "text": "National Yang Ming Chiao Tung University"
+      }
+    ]
+  },
+  {
+    "pageNumber": 2,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 2",
+    "title": "2",
+    "subtitle": "Random Number Generators",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p2-0",
+        "heading": "Random Number Generators",
+        "text": "• Two strategies for generating random bits or random numbers – Pseudorandom number generators (PRNGs) or deterministic random"
+      },
+      {
+        "id": "p2-1",
+        "heading": "bit generators (DRBGs)",
+        "text": "– True random number generators (TRNGs) or non-deterministic"
+      },
+      {
+        "id": "p2-2",
+        "heading": "– RNG-related NIST documents:",
+        "text": "• SP 800-90A: RNG using DRBG (Jun. 2015) • SP 800-90B: ES (Entropy Sources) used for RBG (Jan. 2018) • SP 800-90C: how to combine 90A and 90B (Apr. 2016) • SP 800-22: Statistical Test Suite (Apr. 2010) • Two requirements for a sequence of random numbers – Randomness: uniform distribution and independence"
+      },
+      {
+        "id": "p2-3",
+        "heading": "– Unpredictability",
+        "text": "• PRNGs should pass tests of randomness."
+      }
+    ]
+  },
+  {
+    "pageNumber": 3,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 3",
+    "title": "3",
+    "subtitle": "Types of Random Numbers",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p3-0",
+        "heading": "Types of Random Numbers",
+        "text": "3"
+      }
+    ]
+  },
+  {
+    "pageNumber": 4,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 4",
+    "title": "4",
+    "subtitle": "Randomness",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p4-0",
+        "heading": "• Three randomness characteristics",
+        "text": "– Uniformity: the occurrence of a zero or one is equally likely – Scalability: any test applicable to a sequence can also be applied to"
+      },
+      {
+        "id": "p4-1",
+        "heading": "subsequences extracted at random",
+        "text": "– Consistency: the behavior of a generator must be consistent across starting values. • SP 800-22 lists 15 separate tests of randomness. – Frequency test: the numbers of 0 and 1 are approximately the same – Runs test: the number of runs of 0 and 1 is as expected for a random"
+      },
+      {
+        "id": "p4-2",
+        "heading": "sequences",
+        "text": "– Maurer’s universal statistical test: the number of bits between"
+      },
+      {
+        "id": "p4-3",
+        "heading": "– …",
+        "text": "4"
+      }
+    ]
+  },
+  {
+    "pageNumber": 5,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 5",
+    "title": "5",
+    "subtitle": "Unpredictability",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p5-0",
+        "heading": "Unpredictability",
+        "text": "• A stream of random numbers should have"
+      },
+      {
+        "id": "p5-1",
+        "heading": "properties of unpredictability",
+        "text": "– Forward unpredictability: If the seed is unknown, the next output bit in the sequence should be unpredictable. – Back unpredictability: It is not feasible to determine the seed from knowledge of any generated values."
+      }
+    ]
+  },
+  {
+    "pageNumber": 6,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 6",
+    "title": "6",
+    "subtitle": "Seed Requirement",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p6-0",
+        "heading": "Seed Requirement",
+        "text": "• The seed is critical information to the"
+      },
+      {
+        "id": "p6-1",
+        "heading": "PRNG, and it is suggested that the",
+        "text": "seed is generated by a TRNG."
+      },
+      {
+        "id": "p6-2",
+        "heading": "generate keystream of bits due to the",
+        "text": "overhead of transmission."
+      },
+      {
+        "id": "p6-3",
+        "heading": "with some bias. So, RNF is used to",
+        "text": "remedy the bias."
+      },
+      {
+        "id": "p6-4",
+        "heading": "• The generation of TRNG may not fast",
+        "text": "enough due to the hardware limitation."
+      }
+    ]
+  },
+  {
+    "pageNumber": 7,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 7",
+    "title": "7",
+    "subtitle": "Categories of PRNGs",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p7-0",
+        "heading": "• Purpose-built algorithm",
+        "text": "• Algorithms based on existing cryptographic"
+      },
+      {
+        "id": "p7-1",
+        "heading": "– Asymmetric ciphers",
+        "text": "– Hash functions and message authentication codes"
+      }
+    ]
+  },
+  {
+    "pageNumber": 8,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 8",
+    "title": "8",
+    "subtitle": "Linear Congruential Generators",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p8-0",
+        "heading": "– Seed 𝑋଴:  0൑𝑋 ଴ ൏𝑚",
+        "text": "• An iterative equation to generate random numbers"
+      },
+      {
+        "id": "p8-1",
+        "heading": "𝑋௡ାଵ ൌ 𝑎𝑋௡ ൅𝑐  m o d  𝑚",
+        "text": "• The modulus 𝑚 should be nearly equal to the maximum representable nonnegative integer, e.g., 2ଷଵ."
+      }
+    ]
+  },
+  {
+    "pageNumber": 9,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 9",
+    "title": "9",
+    "subtitle": "Evaluate Random Number Generators",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p9-0",
+        "heading": "• Three tests were proposed",
+        "text": "– T1: should generate a full-period number"
+      },
+      {
+        "id": "p9-1",
+        "heading": "– T2: should appear random",
+        "text": "– T3: can be implemented efficiently with 32-bit"
+      },
+      {
+        "id": "p9-2",
+        "heading": "arithmetic",
+        "text": "• 𝑎ൌ7 ହ ൌ1 6 8 0 7for use in the IBM 360 family • Good for statistical and simulation mission,"
+      },
+      {
+        "id": "p9-3",
+        "heading": "but the algorithm is not secure",
+        "text": "9"
+      }
+    ]
+  },
+  {
+    "pageNumber": 10,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 10",
+    "title": "10",
+    "subtitle": "Blum Blum Shub (BBS) Generator",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p10-0",
+        "heading": "Blum Blum Shub (BBS) Generator",
+        "text": "• Choose two large prime numbers 𝑝 and 𝑞 with 𝑝≡𝑞≡3  mod 4 , and let 𝑛ൌ𝑝ൈ𝑞 . • Choose a random number 𝑠 relatively prime to 𝑛. • The BBS algorithm below generates a sequence of bits 𝐵௜."
+      },
+      {
+        "id": "p10-1",
+        "heading": "𝐵௜ ൌ𝑋 ௜ mod 2",
+        "text": "• Considered as the strongest public proof of the cryptographic strength of any"
+      },
+      {
+        "id": "p10-2",
+        "heading": "purpose-built algorithm",
+        "text": "• Cryptographically Secure PseudoRandom Bit Generator (CSPRBG): pass the next-"
+      },
+      {
+        "id": "p10-3",
+        "heading": "bit test",
+        "text": "– There is not a polynomial-time algorithm that, on input of the first 𝑘 bits of an output sequence, can predict the 𝑘൅1 -st bit with probability significantly greater than 12⁄ . • The security of BBS is based on the difficulty of factoring 𝑛."
+      }
+    ]
+  },
+  {
+    "pageNumber": 11,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 11",
+    "title": "11",
+    "subtitle": "PRNG based on Block Ciphers",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p11-0",
+        "heading": "PRNG based on Block Ciphers",
+        "text": "• CTR is recommended in NIST SP 800-90A,"
+      },
+      {
+        "id": "p11-1",
+        "heading": "• OFB is recommended in X9.82 and RFC",
+        "text": "4086."
+      },
+      {
+        "id": "p11-2",
+        "heading": "OFB PRBG",
+        "text": "11"
+      }
+    ]
+  },
+  {
+    "pageNumber": 12,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 12",
+    "title": "12",
+    "subtitle": "ANSI X9.17 PRNG",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p12-0",
+        "heading": "• Composed of three 3DES’s",
+        "text": "– 𝐷𝑇௜: 64-bit date/time value of the 𝑖-th stage – 𝑉௜: 64-bit seed value of the 𝑖-th stage – 𝑅௜: 64-bit pseudorandom number generated by"
+      },
+      {
+        "id": "p12-1",
+        "heading": "– 𝐾ଵ and 𝐾ଶ: 3DES keys for each stage",
+        "text": "• Input two pseudorandom numbers. One is a 64-bit representation of the current date and time. The other is a 64-bit seed value • All three 3DES’s use the56-bit keys, which must be kept secret. • The output consists of  64-bit pseudorandom number and a 64-bit seed value."
+      },
+      {
+        "id": "p12-2",
+        "heading": "𝑉௜ାଵ ൌ𝐸 𝐷 𝐸𝐾ଵ,𝐾ଶ , 𝑅௜⨁𝐸𝐷𝐸 𝐾ଵ,𝐾ଶ ,𝐷 𝑇௜",
+        "text": "12"
+      }
+    ]
+  },
+  {
+    "pageNumber": 13,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 13",
+    "title": "13",
+    "subtitle": "• Part of the hardware random number",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p13-0",
+        "heading": "• The DRBG assumes that an entropy",
+        "text": "source is available to provide random bits. • The block encryption algorithm can be 3-"
+      },
+      {
+        "id": "p13-1",
+        "heading": "– 𝑘𝑒𝑦𝑙𝑒𝑛: key length",
+        "text": "– 𝑠𝑒𝑒𝑑𝑙𝑒𝑛: the length of the seed that is a"
+      },
+      {
+        "id": "p13-2",
+        "heading": "encryption key that is the maximum",
+        "text": "number of output blocks generated before"
+      },
+      {
+        "id": "p13-3",
+        "heading": "CTR_DRBG (NIST SP 800-90A)",
+        "text": "13"
+      }
+    ]
+  },
+  {
+    "pageNumber": 14,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 14",
+    "title": "14",
+    "subtitle": "Stream Ciphers",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p14-0",
+        "heading": "Stream Ciphers",
+        "text": "• A stream cipher typically encrypts plaintext one byte at a time, although it also may be designed to operate on 1 bit or on units larger than a byte. • It is like the OTP but with a PRNG with a key 𝐾 to generate the key stream. • The key length is recommended at least 128 bits. • A stream cipher is faster and needs far less codes in implementation than a block cipher. • A stream cipher is better than a block cipher to protect a stream of data such as a data communication channel. • However, from the aspect of key reuse, block ciphers are better than stream ciphers."
+      }
+    ]
+  },
+  {
+    "pageNumber": 15,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 15",
+    "title": "15",
+    "subtitle": "RC4",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p15-0",
+        "heading": "– Was a trade secret by RSA Security",
+        "text": "– Was anonymously posted on the Internet in Sep. 1994 – The period of the cipher is greater than 10ଵ଴଴ • Used in WPA (WiFi Protected Access) of IEEE 802.11, and optional"
+      },
+      {
+        "id": "p15-1",
+        "heading": "for SSH (Secure Shell) and Kerberos",
+        "text": "• Variable key size with byte-oriented operation – A 1~256-byte key is used to initialize a 256-byte state vector 𝑆 0. . 255that contains a permutation of all 8-bit numbers from 0 to 255 at all times. – For encryption/decryption, a byte 𝑘 is selected from 𝑆 systematically. – As the 𝑘 is generated, 𝑆 are permutated again."
+      }
+    ]
+  },
+  {
+    "pageNumber": 16,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 16",
+    "title": "16",
+    "subtitle": "RC4 Algorithm",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p16-0",
+        "heading": "𝑘ൌ𝑆 𝑡  the output",
+        "text": "16"
+      }
+    ]
+  },
+  {
+    "pageNumber": 17,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 17",
+    "title": "17",
+    "subtitle": "Weakness of RC4",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p17-0",
+        "heading": "Weakness of RC4",
+        "text": "• Many analyzing methods of attacking RC4 have been published, but none of them is practical. • A problem is reported on the key generation of WEP protocol for use as input to RC4, but it is not relevant to RC4 itself. • In 2007, a fundamental vulnerability in the RC4 key scheduling was reported. • In 2013, it was reported that the biases in RC4 keystream can be exploited to recover repeatedly encrypted plaintext. • In 2013, NIST in SP 800-52 (guidelines for TLS) prohibited the use of RC4 for government use. • In 2015, IETF in RFC 7465 prohibited the use of RC4 in TLS."
+      }
+    ]
+  },
+  {
+    "pageNumber": 18,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 18",
+    "title": "18",
+    "subtitle": "Entropy Sources",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p18-0",
+        "heading": "Entropy Sources",
+        "text": "• TRNG’s rely on unpredictable natural processes to produce randomness, such as pulse detectors of ionizing radiation events, gas discharge tubes, and leaky capacitors. – Intel has developed a commercial chip on thermal noise by sampling the output of a coupled pair of inverters. – LavaRnd is an open source project utilizing inexpensive cameras."
+      },
+      {
+        "id": "p18-1",
+        "heading": "– Keyboard timing, mouse movement, …",
+        "text": "• RFC 4086 lists possible sources of randomness"
+      },
+      {
+        "id": "p18-2",
+        "heading": "– Disk devices",
+        "text": "• “random.org”, an online randomness service, delivers random sequences securely over the Internet."
+      }
+    ]
+  },
+  {
+    "pageNumber": 19,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 19",
+    "title": "19",
+    "subtitle": "Comparison of PRNGs and TRNGs",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p19-0",
+        "heading": "Generators",
+        "text": "Efficiency Very efficient Generally inefficient Determinism Deterministic Nondeterministic"
+      },
+      {
+        "id": "p19-1",
+        "heading": "Periodicity Periodic Aperiodic",
+        "text": "19"
+      }
+    ]
+  },
+  {
+    "pageNumber": 20,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 20",
+    "title": "20",
+    "subtitle": "Conditioning",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p20-0",
+        "heading": "Conditioning",
+        "text": "• A TRNG may produce an output that is biased in some way, such as having more ones than zeros or vice versa. • It is assumed that hardware sources of random bits may be bias. “conditioning algorithms” are applied to further randomize/scramble the bits to eliminate bias and increase entropy. • The two most common approaches are the use of a hash function or a symmetric block cipher. – Linux uses four entropy sources: mouse and keyboard activity, disk I/O operations, and specific interrupts. Bits are generated from these four sources and stored in a pooled buffer. Bits are read from the buffer and passed to SHA-1 to generate random bits. – AES is used to scramble the TRNG bits, e.g., in SP 800-90B and the Intel implementation."
+      }
+    ]
+  },
+  {
+    "pageNumber": 21,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 21",
+    "title": "21",
+    "subtitle": "Health Testing",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p21-0",
+        "heading": "• Repetition Count Test",
+        "text": "– The probability of a 𝐻-bits sample repeating 𝐶 times in a row Pr 𝐶 identical samples in a row ൑ 2ିு ஼ିଵ – The test keeps looking for consecutive identical samples. If the count reaches some cutoff value 𝐶, an error condition is raised. – A parameter 𝑊൑ 2ିு ஼ିଵis set at some very small value to"
+      },
+      {
+        "id": "p21-1",
+        "heading": "ு . For example, 𝑊ൌ2 ିଷ଴ and 𝐻ൌ7 . 3",
+        "text": "bits per sample would have a cutoff value 𝐶 of 1൅"
+      },
+      {
+        "id": "p21-2",
+        "heading": "ଷ଴",
+        "text": "଻.ଷ ൌ6 ."
+      },
+      {
+        "id": "p21-3",
+        "heading": "• Adaptive Proportion Test",
+        "text": "– Record a sample value and then observes 𝑁 successive sample values. – If the record value is observed at least 𝐶 times, then an error condition is reported."
+      }
+    ]
+  },
+  {
+    "pageNumber": 22,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 22",
+    "title": "22",
+    "subtitle": "Intel Digital Random Number Generator (DRNG)",
+    "accent": "cyan",
+    "blocks": [
+      {
+        "id": "p22-0",
+        "heading": "",
+        "text": "Intel Digital Random Number Generator (DRNG)"
+      },
+      {
+        "id": "p22-1",
+        "heading": "production rates comparable with",
+        "text": "that of PRNGs."
+      },
+      {
+        "id": "p22-2",
+        "heading": "256 bits",
+        "text": "22"
+      }
+    ]
+  },
+  {
+    "pageNumber": 23,
+    "eyebrow": "LECTURE 8.RANDOM BIT GENERATION AND STREAM CIPHERS · PAGE 23",
+    "title": "23",
+    "subtitle": "Thanks for Listening",
+    "accent": "blue",
+    "blocks": [
+      {
+        "id": "p23-0",
+        "heading": "Thanks for Listening",
+        "text": "23"
       }
     ]
   }
