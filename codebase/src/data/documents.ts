@@ -1,4 +1,5 @@
 import type { DocumentGroupData, DocumentPage, TutorDocument } from '../types'
+import { d1Pages, d2Pages } from './parsed_slides'
 
 export const mockPages: DocumentPage[] = [
   {
@@ -93,17 +94,45 @@ const createDocument = (id: string, name: string, totalPages: number): TutorDocu
   pages: mockPages
 })
 
-export const documents: TutorDocument[] = [
+export const d1Document: TutorDocument = {
+  id: 'd1-slide-hackathon',
+  groupId: 'day01',
+  name: 'd1-slide-hackathon.pdf',
+  shortName: 'd1-slide-hackathon',
+  totalPages: d1Pages.length,
+  courseCode: 'COMP2010',
+  breadcrumb: 'COMP2010 · Slide Bài Giảng · Day01',
+  pages: d1Pages
+}
+
+export const d2Document: TutorDocument = {
+  id: 'd2-slide-hackathon',
+  groupId: 'day02',
+  name: 'd2-slide-hackathon.pdf',
+  shortName: 'd2-slide-hackathon',
+  totalPages: d2Pages.length,
+  courseCode: 'COMP2010',
+  breadcrumb: 'COMP2010 · Slide Bài Giảng · Day02',
+  pages: d2Pages
+}
+
+export const day04Documents: TutorDocument[] = [
   createDocument('basic', 'day04-prompt-engineering-basic.pdf', 43),
   createDocument('example', 'day04-prompt-engineering-example.pdf', 78),
   createDocument('tool-calling', 'day04-prompt-engineering-tool-calling.pdf', 98)
 ]
 
+export const documents: TutorDocument[] = [
+  d1Document,
+  d2Document,
+  ...day04Documents
+]
+
 export const documentGroups: DocumentGroupData[] = [
-  { id: 'day01', name: 'Day01', meta: '2 tài liệu · Published', documents: [] },
-  { id: 'day02', name: 'Day02', meta: '1 tài liệu · Published', documents: [] },
-  { id: 'day03', name: 'Day03', meta: '2 tài liệu · Published', documents: [] },
-  { id: 'day04', name: 'Day04', meta: '3 tài liệu · Published', documents }
+  { id: 'day01', name: 'Day01', meta: '1 tài liệu · Published', documents: [d1Document] },
+  { id: 'day02', name: 'Day02', meta: '1 tài liệu · Published', documents: [d2Document] },
+  { id: 'day03', name: 'Day03', meta: '0 tài liệu · Published', documents: [] },
+  { id: 'day04', name: 'Day04', meta: '3 tài liệu · Published', documents: day04Documents }
 ]
 
 export const suggestedQuestions = [

@@ -26,7 +26,7 @@ function App() {
     if (saved === 'dark' || saved === 'light') return saved
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
-  const [expandedGroups, setExpandedGroups] = useState(new Set(['day04']))
+  const [expandedGroups, setExpandedGroups] = useState(new Set(['day01', 'day02', 'day04']))
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [tutorOpen, setTutorOpen] = useState(false)
   const [tutorExpanded, setTutorExpanded] = useState(false)
