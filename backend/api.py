@@ -1,6 +1,7 @@
 import os
 import sys
 from pathlib import Path
+# pyrefly: ignore [missing-import]
 from pydantic import BaseModel
 from typing import List, Optional, Dict
 from fastapi import FastAPI, HTTPException
@@ -28,16 +29,26 @@ class ChatRequest(BaseModel):
     messages: List[Dict[str, str]]
     pdf_name: Optional[str] = None
     slide_text: Optional[str] = None
+    full_document_text: Optional[str] = None
     current_page: Optional[int] = None
+
+# In-memory document text cache
+doc_cache: Dict[str, str] = {}
+doc_text_cache: Dict[str, str] = doc_cache
 
 def extract_text_from_pdf(pdf_path: Path) -> str:
     """Đọc và trích xuất nội dung từ file PDF"""
+    if pdf_path.name in doc_cache:
+        return doc_cache[pdf_path.name]
+
     reader = pypdf.PdfReader(pdf_path)
     text = ""
     for i, page in enumerate(reader.pages):
         extracted = page.extract_text()
         if extracted:
             text += f"\n--- TRANG {i+1} ---\n{extracted}\n"
+    
+    doc_cache[pdf_path.name] = text
     return text
 
 @app.post("/api/chat")
@@ -52,24 +63,33 @@ async def chat(request: ChatRequest):
         raise HTTPException(status_code=500, detail=f"Lỗi khởi tạo provider AI: {e}")
 
     text_context = ""
+    input_text = request.full_document_text or request.slide_text or ""
     if request.pdf_name:
         slides_dir = BACKEND_DIR / "slides"
         pdf_path = slides_dir / request.pdf_name
         if pdf_path.exists():
             text_context = extract_text_from_pdf(pdf_path)
         else:
-            # Fallback to provided text if PDF not found
-            text_context = request.slide_text or ""
+            doc_key = request.pdf_name
+            if doc_key in doc_cache and not input_text:
+                text_context = doc_cache[doc_key]
+            else:
+                text_context = input_text
+                if text_context:
+                    doc_cache[doc_key] = text_context
     else:
-        text_context = request.slide_text or ""
+        text_context = input_text
 
-    page_info = f"\nHọc sinh đang xem TRANG SỐ {request.current_page} của bài giảng." if request.current_page else ""
+    page_info = f"\nHọc sinh hiện tại đang xem và đặt câu hỏi tại TRANG SỐ {request.current_page} của bài giảng." if request.current_page else ""
 
-    system_prompt = f"""Bạn là một trợ giảng AI xuất sắc, nhiệm vụ của bạn là hỗ trợ học sinh học tập dựa trên nội dung slide bài giảng được cung cấp.
+    system_prompt = f"""Bạn là một trợ giảng AI xuất sắc, nhiệm vụ của bạn là hỗ trợ học sinh học tập dựa trên toàn bộ nội dung slide bài giảng được cung cấp.
 
 Quy tắc hoạt động:
-1. NGUỒN KIẾN THỨC & MỞ RỘNG: Trả lời các câu hỏi dựa trên thông tin trong NỘI DUNG SLIDE (bao gồm việc đọc các trang khác để bổ sung thông tin cho trang hiện tại nếu cần). ĐẶC BIỆT: Trong trường hợp slide viết vắn tắt, thiếu nội dung hoặc chỉ có tiêu đề/hình ảnh, bạn CÓ QUYỀN sử dụng kiến thức chuyên môn bên ngoài của bản thân để giảng giải thật chi tiết, dễ hiểu cho học sinh. Tuy nhiên, khi dùng kiến thức bên ngoài, BẠN PHẢI GHI RÕ NGUỒN (ví dụ: "Theo kiến thức chuyên ngành khoa học máy tính...", "Nguồn bổ sung: ...").
-2. NGỮ CẢNH: {page_info} Bạn hãy ưu tiên liên hệ câu trả lời với nội dung của trang học sinh đang xem nếu câu hỏi có ý hỏi về "trang này", "ở đây".
+1. NGUỒN KIẾN THỨC & LIÊN KẾT TOÀN BỘ SLIDE: Bạn được cung cấp toàn bộ nội dung bài giảng (bao gồm tất cả các trang/slide từ đầu đến cuối).
+   - Khi học sinh hỏi ở một trang bất kỳ (ví dụ Trang 6), bạn PHẢI chủ động đọc, đối chiếu và liên kết kiến thức từ các trang trước đó (ví dụ Trang 1, 2, 3, 4, 5...) cũng như toàn bộ bài giảng để đưa ra câu trả lời đầy đủ, hệ thống và chính xác nhất.
+   - Tuyệt đối không giới hạn câu trả lời chỉ ở trang hiện tại; hãy kết nối mạch kiến thức với các trang liên quan khác trong bài giảng.
+   - ĐẶC BIỆT: Trong trường hợp slide viết vắn tắt, thiếu nội dung hoặc chỉ có tiêu đề/hình ảnh, bạn CÓ QUYỀN sử dụng kiến thức chuyên môn bên ngoài của bản thân để giảng giải thật chi tiết, dễ hiểu cho học sinh. Tuy nhiên, khi dùng kiến thức bên ngoài, BẠN PHẢI GHI RÕ NGUỒN (ví dụ: "Theo kiến thức chuyên ngành khoa học máy tính...", "Nguồn bổ sung: ...").
+2. NGỮ CẢNH: {page_info} Hãy ưu tiên dùng kiến thức toàn bài giảng để phục vụ việc giải thích nội dung trang học sinh đang xem.
 3. TÓM TẮT TOÀN BỘ: Nếu học sinh yêu cầu tóm tắt toàn bộ file/bài giảng, bạn PHẢI thực hiện tóm tắt toàn bộ dựa trên NỘI DUNG SLIDE đã cung cấp. TUYỆT ĐỐI KHÔNG ĐƯỢC từ chối hoặc yêu cầu học sinh chọn từng trang để tóm tắt.
 4. NGÔN NGỮ TRẢ LỜI: ĐÂY LÀ QUY TẮC TỐI QUAN TRỌNG. BẠN BẮT BUỘC PHẢI TRẢ LỜI BẰNG ĐÚNG NGÔN NGỮ MÀ HỌC SINH ĐÃ DÙNG ĐỂ HỎI. 
 - Nếu học sinh hỏi bằng Tiếng Anh (ví dụ: "What is this?"), toàn bộ câu trả lời phải bằng Tiếng Anh. 
@@ -78,8 +98,14 @@ Quy tắc hoạt động:
 - Dù nội dung slide là tiếng Việt, nhưng nếu câu hỏi là tiếng Anh, bạn phải dịch nội dung slide sang tiếng Anh để trả lời. Việc trả lời sai ngôn ngữ là vi phạm nghiêm trọng.
 5. VAI TRÒ TRỢ GIẢNG: Khuyến khích sử dụng kỹ năng sư phạm: Dịch thuật, Tóm tắt, Giải thích khái niệm phức tạp một cách dễ hiểu, mở rộng kiến thức nếu cần thiết để học sinh hiểu bài.
 6. TỪ CHỐI BỊA ĐẶT THÔNG TIN SAI LỆCH: Bạn được phép bổ sung kiến thức bên ngoài có thật và chính xác để giải thích bài giảng, nhưng KHÔNG ĐƯỢC bịa đặt các định nghĩa sai sự thật hoặc không liên quan đến chủ đề học.
+7. PHÂN BIỆT RÕ TRANG TRỐNG VỚI KHÔNG CÓ TRANG: 
+- Nếu trang/slide mà học sinh đang xem CÓ TỒN TẠI trong bài giảng (ví dụ Trang 9) nhưng chưa có nội dung chi tiết hoặc nội dung bị trống, BẠN PHẢI NÓI RÕ LÀ: "Trang [X] có tồn tại trong bài giảng nhưng hiện tại chưa có/chưa nạp nội dung chi tiết". 
+- TUYỆT ĐỐI KHÔNG ĐƯỢC NÓI LÀ "không có trang/slide [X]" hay "bài giảng không có trang [X]", vì trang đó thực sự CÓ trong bài giảng nhưng chưa chứa nội dung chi tiết.
+8. XỬ LÝ TỪ VIẾT TẮT:
+- Khi học sinh sử dụng từ viết tắt: Bạn hãy dùng luôn từ viết tắt đó trong câu trả lời và khi giải thích hãy mở ngoặc giải thích rõ ý nghĩa của từ viết tắt đó (ví dụ: "AI (Trí tuệ nhân tạo)", "LLM (Mô hình ngôn ngữ lớn)").
+- Trường hợp học sinh dùng từ viết tắt quá mơ hồ, lạ hoặc khó hiểu mà không thể suy luận chính xác từ ngữ cảnh bài giảng, TUYỆT ĐỐI KHÔNG ĐƯỢC ĐOÁN BỪA; hãy lịch sự hỏi lại học sinh ý nghĩa của cụm từ viết tắt đó để giải thích chính xác.
 
-NỘI DUNG SLIDE:
+NỘI DUNG SLIDE TOÀN BỘ BÀI GIẢNG:
 {text_context}
 """
     

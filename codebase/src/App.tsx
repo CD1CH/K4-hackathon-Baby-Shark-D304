@@ -55,19 +55,67 @@ function App() {
 
   const append = (documentId: string, message: ChatItem) => setChatByDocument((state) => ({ ...state, [documentId]: [...(state[documentId] ?? []), message] }))
 
-  const ask = (question: string, mode: AnswerMode = 'normal', addUser = true) => {
+  const ask = async (question: string, mode: AnswerMode = 'normal', addUser = true) => {
     if (!question.trim() || isTyping) return
     const sourceDocument = document
     const sourcePage = currentPage
     const sourceSelection = selectedText
+    const currentMessages = chatByDocument[document.id] ?? []
     if (addUser) append(document.id, { id: id(), role: 'user', content: question.trim(), timestamp: new Date(), sourcePage })
     setIsTyping(true)
-    if (responseTimer.current) window.clearTimeout(responseTimer.current)
-    responseTimer.current = window.setTimeout(() => {
-      append(sourceDocument.id, mockTutorResponse(question, sourcePage, sourceSelection, mode, sourceDocument))
-      setIsTyping(false)
-      responseTimer.current = null
-    }, 950)
+
+    try {
+      const payloadMessages = currentMessages
+        .concat(addUser ? [{ id: id(), role: 'user', content: question.trim(), timestamp: new Date(), sourcePage }] : [])
+        .map((m) => ({ role: m.role === 'tutor' ? 'assistant' : m.role, content: m.content }))
+
+      const fullSlideText = sourceDocument.pages.map((p) => {
+        const blocksText = p.blocks.map((b) => (b.heading ? `[${b.heading}]\n${b.text}` : b.text)).join('\n')
+        return `--- TRANG ${p.pageNumber}: ${p.title} ---\n${blocksText}`
+      }).join('\n\n')
+
+      const res = await fetch('http://localhost:8000/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: payloadMessages,
+          pdf_name: sourceDocument.name,
+          current_page: sourcePage,
+          slide_text: fullSlideText,
+          full_document_text: fullSlideText
+        })
+      })
+
+      if (res.ok) {
+        const rawText = await res.text()
+        let content = rawText
+        try {
+          const parsed = JSON.parse(rawText)
+          if (parsed.text) content = parsed.text
+        } catch {
+          // Plain text response
+        }
+
+        if (content && content.trim()) {
+          append(sourceDocument.id, {
+            id: id(),
+            role: 'tutor',
+            content: content.trim(),
+            citations: [sourcePage],
+            timestamp: new Date(),
+            answerMode: mode,
+            sourcePage
+          })
+          setIsTyping(false)
+          return
+        }
+      }
+    } catch (err) {
+      console.warn('Backend API unavailable, falling back to mock tutor:', err)
+    }
+
+    append(sourceDocument.id, mockTutorResponse(question, sourcePage, sourceSelection, mode, sourceDocument))
+    setIsTyping(false)
   }
 
   const questionFor = (message: ChatItem) => {
