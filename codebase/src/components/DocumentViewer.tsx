@@ -1,9 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { getDocumentPage } from '../data/documents'
+import { useEffect, useRef, useState } from 'react'
+import { Document, Page, pdfjs } from 'react-pdf'
+import 'react-pdf/dist/Page/AnnotationLayer.css'
+import 'react-pdf/dist/Page/TextLayer.css'
 import type { SelectedText, TutorDocument } from '../types'
-import { DocumentPageCard } from './DocumentPageCard'
 import { DocumentToolbar, type ViewerTool } from './DocumentToolbar'
 import { PageNavigation } from './PageNavigation'
+
+// Setup pdf.js worker using public folder file (most robust method)
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 type Props = {
   document: TutorDocument
@@ -20,123 +24,128 @@ type Props = {
 
 export function DocumentViewer(props: Props) {
   const [activeTool, setActiveTool] = useState<ViewerTool>('read')
-  const viewportRef = useRef<HTMLDivElement>(null)
+  const [pdfError, setPdfError] = useState<Error | null>(null);
   const viewerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const pageRefs = useRef<Map<number, HTMLDivElement>>(new Map())
-  const isProgrammaticScroll = useRef(false)
-  const scrollTimeoutRef = useRef<number | null>(null)
-  const lastReportedPage = useRef<number>(props.currentPage)
+  
+  // Biến tạm để tránh vòng lặp vô tận khi tự động cuộn
+  const isAutoScrolling = useRef(false)
 
-  const onPageChangeRef = useRef(props.onPageChange)
-  onPageChangeRef.current = props.onPageChange
-  const currentPageRef = useRef(props.currentPage)
-  currentPageRef.current = props.currentPage
-
-  const pages = useMemo(() => {
-    return Array.from({ length: props.document.totalPages }, (_, i) => getDocumentPage(props.document, i + 1))
-  }, [props.document])
-
+  // Intersection Observer to detect which page is on screen
   useEffect(() => {
-    const container = viewportRef.current
-    if (!container) return
-
-    const visibleRatios = new Map<number, number>()
-
     const observer = new IntersectionObserver(
       (entries) => {
-        if (isProgrammaticScroll.current) return
-
-        entries.forEach((entry) => {
-          const pageNum = Number(entry.target.getAttribute('data-page-number'))
-          if (pageNum) {
-            visibleRatios.set(pageNum, entry.intersectionRatio)
+        if (isAutoScrolling.current) return;
+        
+        let visiblePages = entries.filter(e => e.isIntersecting)
+        if (visiblePages.length > 0) {
+          // Lấy trang chiếm nhiều diện tích nhất
+          const mostVisible = visiblePages.reduce((prev, current) => 
+            (prev.intersectionRatio > current.intersectionRatio) ? prev : current
+          )
+          
+          const pageNum = Number(mostVisible.target.getAttribute('data-page-number'))
+          if (pageNum && pageNum !== props.currentPage) {
+            props.onPageChange(pageNum)
           }
-        })
-
-        let maxRatio = 0
-        let mostVisiblePage = currentPageRef.current
-
-        visibleRatios.forEach((ratio, pageNum) => {
-          if (ratio > maxRatio) {
-            maxRatio = ratio
-            mostVisiblePage = pageNum
-          }
-        })
-
-        if (maxRatio > 0.05 && mostVisiblePage !== currentPageRef.current) {
-          lastReportedPage.current = mostVisiblePage
-          onPageChangeRef.current(mostVisiblePage)
         }
       },
       {
-        root: container,
-        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0]
+        root: containerRef.current,
+        threshold: [0.1, 0.4, 0.6, 0.9], 
       }
     )
 
-    pageRefs.current.forEach((el) => observer.observe(el))
+    const currentRefs = pageRefs.current
+    currentRefs.forEach((node) => observer.observe(node))
 
     return () => {
+      currentRefs.forEach((node) => observer.unobserve(node))
       observer.disconnect()
     }
-  }, [props.document.id, pages])
+  }, [props.currentPage, props.onPageChange]) // Phụ thuộc vào currentPage để lấy state mới nhất
 
+  // Scroll to page when props.currentPage changes (e.g. Next/Prev button)
   useEffect(() => {
-    if (lastReportedPage.current === props.currentPage) return
-
-    const targetEl = pageRefs.current.get(props.currentPage)
-    if (targetEl && viewportRef.current) {
-      isProgrammaticScroll.current = true
-      lastReportedPage.current = props.currentPage
-
-      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
-
-      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current)
-      scrollTimeoutRef.current = window.setTimeout(() => {
-        isProgrammaticScroll.current = false
-      }, 600)
+    const targetNode = pageRefs.current.get(props.currentPage)
+    if (targetNode && containerRef.current) {
+      const rect = targetNode.getBoundingClientRect()
+      const containerRect = containerRef.current.getBoundingClientRect()
+      
+      const isVisible = (
+        rect.top >= containerRect.top - 100 &&
+        rect.bottom <= containerRect.bottom + 100
+      )
+      
+      if (!isVisible) {
+        isAutoScrolling.current = true
+        targetNode.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        
+        // Mở khóa observer sau khi cuộn xong (ước tính 800ms)
+        setTimeout(() => {
+          isAutoScrolling.current = false
+        }, 800)
+      }
     }
-  }, [props.currentPage])
-
-  useEffect(() => {
-    if (viewportRef.current) {
-      isProgrammaticScroll.current = true
-      viewportRef.current.scrollTo({ top: 0, behavior: 'instant' })
-      lastReportedPage.current = 1
-      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current)
-      scrollTimeoutRef.current = window.setTimeout(() => {
-        isProgrammaticScroll.current = false
-      }, 300)
-    }
-  }, [props.document.id])
+  }, [props.currentPage, props.document.id])
 
   const download = () => {
-    const url = URL.createObjectURL(new Blob([`Prototype: ${props.document.name}`], { type: 'text/plain' }))
-    const anchor = window.document.createElement('a'); anchor.href = url; anchor.download = `${props.document.shortName}-prototype.txt`; anchor.click(); URL.revokeObjectURL(url)
-    props.onNotify('Đã tạo bản tải xuống mô phỏng.')
+    const url = `/slides/${props.document.name}`
+    const anchor = window.document.createElement('a'); anchor.href = url; anchor.download = props.document.name; anchor.click()
+    props.onNotify('Đã tải xuống tài liệu.')
   }
 
-  const copy = async (text: string) => { await navigator.clipboard.writeText(text); props.onNotify('Đã sao chép đoạn được chọn.') }
+  const pdfUrl = `/slides/${props.document.name}`
 
   return (
-    <div ref={viewerRef} className="flex h-[calc(100dvh-64px)] min-w-0 flex-col bg-[#edf2f8] dark:bg-slate-900">
+    <div ref={viewerRef} className="flex h-[calc(100dvh-64px)] min-w-0 flex-col bg-[#edf2f8] dark:bg-slate-900 relative">
       <DocumentToolbar currentPage={props.currentPage} totalPages={props.document.totalPages} zoom={props.zoom} activeTool={activeTool} hasSelection={Boolean(props.selectedText)} onToolChange={setActiveTool} onZoomChange={props.onZoomChange} onDownload={download} onFullscreen={async () => window.document.fullscreenElement ? window.document.exitFullscreen() : viewerRef.current?.requestFullscreen()} onUndo={props.onClearSelection} />
-      <div ref={viewportRef} className="panel-scroll min-h-0 flex-1 overflow-y-scroll px-3 py-5 sm:px-6">
-        <div className="mx-auto max-w-[980px] space-y-7 pb-6">
-          {pages.map((page) => (
-            <div
-              key={`${props.document.id}-${page.pageNumber}`}
-              data-page-number={page.pageNumber}
-              ref={(el) => {
-                if (el) pageRefs.current.set(page.pageNumber, el)
-                else pageRefs.current.delete(page.pageNumber)
-              }}
-            >
-              <DocumentPageCard document={props.document} page={page} active={page.pageNumber === props.currentPage} zoom={props.zoom} selectedText={props.selectedText} onActivate={(pageNumber) => { if (pageNumber !== props.currentPage) props.onPageChange(pageNumber) }} onSelect={props.onSelectText} onClear={props.onClearSelection} onAsk={props.onAskSelected} onCopy={copy} />
-            </div>
-          ))}
+      <div ref={containerRef} className="panel-scroll min-h-0 flex-1 overflow-y-auto relative pb-32">
+        <div className="mx-auto flex flex-col items-center gap-8 py-8 px-4">
+          <Document 
+            file={pdfUrl} 
+            loading={<div className="p-10 text-slate-500 font-medium">Đang tải PDF...</div>}
+            error={<div className="p-10 text-red-500 font-medium max-w-lg break-words">Lỗi tải PDF: {pdfError?.message || "Không xác định"}</div>}
+            onLoadError={(err) => { console.error("PDF Load Error:", err); setPdfError(err); }}
+            onLoadSuccess={() => {
+              // Re-attach observers when document loads and renders
+              setTimeout(() => {
+                const currentRefs = pageRefs.current
+                if (currentRefs.size > 0 && containerRef.current) {
+                  const event = new Event('scroll');
+                  containerRef.current.dispatchEvent(event);
+                }
+              }, 1000)
+            }}
+          >
+            {Array.from(new Array(props.document.totalPages), (_, index) => (
+              <div 
+                key={`page_${index + 1}`} 
+                ref={(el) => {
+                  if (el) pageRefs.current.set(index + 1, el)
+                  else pageRefs.current.delete(index + 1)
+                }}
+                data-page-number={index + 1}
+                className={`bg-white transition-all duration-300 mb-8 mx-auto ${props.currentPage === index + 1 ? 'ring-4 ring-brand-500 shadow-xl' : 'ring-1 ring-slate-200 shadow-sm dark:ring-slate-700'}`}
+              >
+                <Page 
+                  pageNumber={index + 1} 
+                  scale={props.zoom / 100}
+                  renderTextLayer={true}
+                  renderAnnotationLayer={true}
+                  loading={<div className="h-[800px] flex items-center justify-center text-slate-400 text-sm">Đang vẽ trang {index + 1}...</div>}
+                />
+              </div>
+            ))}
+          </Document>
         </div>
-        <PageNavigation currentPage={props.currentPage} totalPages={props.document.totalPages} onChange={props.onPageChange} />
+      </div>
+      
+      <div className="absolute bottom-6 left-0 right-0 flex justify-center pointer-events-none">
+          <div className="pointer-events-auto shadow-lg rounded-full">
+            <PageNavigation currentPage={props.currentPage} totalPages={props.document.totalPages} onChange={props.onPageChange} />
+          </div>
       </div>
     </div>
   )

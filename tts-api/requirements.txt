@@ -1,0 +1,27 @@
+# PyTorch — Standard version for Mac (supports MPS/CPU)
+torch
+torchaudio
+
+# Web
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.9
+
+# ML
+transformers==5.6.2
+accelerate
+numpy>=1.24.0
+
+# HuggingFace
+huggingface_hub>=0.22.0
+
+# Local package (bundled source — no network needed)
+-e ./app/tts
+
+# TTS extras
+pydub
+soundfile
+tqdm
+mlx>=0.27.0
+vieneu
+onnxruntime-silicon

@@ -2,3 +2,95 @@
 node_modules/
 *.env
 __pycache__/
+.venv/
+venv/
+dist/
+*.wav
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+*.manifest
+*.spec
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Environment / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Test / type / lint caches ---
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# --- Databases (local) ---
+*.sqlite
+*.sqlite3
+*.db
+
+# --- Logs ---
+*.log
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- IDE / editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Node / Vite (merged from frontend/.gitignore) ---
+node_modules/
+dist/
+dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --- Claude Code worktrees ---
+.claude/
+
+# --- Source photography for the POI import ---
+# 82 MB of full-size originals. `frontend/scripts/import_place_photos.py` turns
+# these into the ~5.6 MB of 640px web assets under frontend/public/places/,
+# which ARE committed. Keep the originals locally so the import can be re-run at
+# a different size; there is no reason for them to be in the repo.
+map_data/
+
+# --- TTS API service (merged from tts-api/.gitignore) ---
+.Python
+.hf_cache/
+tts-api/uploads/
+# Model weights, downloaded on the server — never in the repo.
+tts-api/app/tts/checkpoints/

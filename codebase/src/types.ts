@@ -60,5 +60,5 @@ export type ChatItem = {
 export type ToastData = {
   id: number
   message: string
-  tone?: 'success' | 'info' | 'warning'
+  tone?: 'success' | 'info' | 'warning' | 'error'
 }
