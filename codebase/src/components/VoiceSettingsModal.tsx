@@ -135,6 +135,16 @@ export function VoiceSettingsModal({
   const playTest = async () => {
     setIsPlaying(true)
     const text = language === 'en' ? 'Hello, this is a test voice.' : 'Xin chào, đây là giọng nói thử nghiệm.'
+    
+    if (voiceType === 'default') {
+      const utterance = new SpeechSynthesisUtterance(text)
+      utterance.lang = language === 'en' ? 'en-US' : 'vi-VN'
+      utterance.onend = () => setIsPlaying(false)
+      utterance.onerror = () => setIsPlaying(false)
+      window.speechSynthesis.speak(utterance)
+      return
+    }
+
     try {
       const res = await fetch('http://localhost:8000/api/tts', {
         method: 'POST',
@@ -143,7 +153,7 @@ export function VoiceSettingsModal({
           text,
           lang: language === 'en' ? 'en' : 'vi',
           voice: voice,
-          voice_id: voiceType === 'cloned' ? voiceId : null
+          voice_id: voiceId
         })
       })
       if (!res.ok) { setIsPlaying(false); return }
@@ -174,12 +184,8 @@ export function VoiceSettingsModal({
 
         {voiceType === 'default' ? (
           <div className="space-y-4">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Chọn giọng mặc định</label>
-              <select value={voice} onChange={e => setVoice(e.target.value as 'male'|'female')} className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-white">
-                <option value="female">Giọng 1 (Nữ)</option>
-                <option value="male">Giọng 2 (Nam)</option>
-              </select>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
+              Hệ thống sẽ sử dụng giọng nói mặc định của thiết bị. Giọng đọc sẽ tự động thay đổi theo ngôn ngữ của tài liệu.
             </div>
             <button onClick={playTest} disabled={isPlaying} className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-50 py-3 text-sm font-bold text-brand-700 hover:bg-brand-100 dark:bg-brand-900/30 dark:text-brand-400">
               <Play size={16}/> {isPlaying ? 'Đang phát...' : 'Nghe thử'}

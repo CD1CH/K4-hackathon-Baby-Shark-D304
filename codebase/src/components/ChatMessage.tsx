@@ -16,38 +16,25 @@ type Props = {
   onDislike: (message: ChatItem) => void
   voiceLang?: string
   voiceSpeed?: number
-  onReadMessage?: (text: string) => void
+  isReading?: boolean
+  onToggleRead?: () => void
 }
 
-export function ChatMessage({ message, disabled, onCitation, onSimplify, onPageOnly, onCopy, onLike, onDislike, voiceLang = 'vi-VN', voiceSpeed = 1.0, onReadMessage }: Props) {
-  const [isReading, setIsReading] = useState(false)
-
-  // Listen for speech synthesis end globally in case it is stopped from elsewhere
-  useEffect(() => {
-    const handleEnd = () => setIsReading(false)
-    window.addEventListener('speech-end', handleEnd)
-    return () => window.removeEventListener('speech-end', handleEnd)
-  }, [])
-
+export function ChatMessage({ message, disabled, onCitation, onSimplify, onPageOnly, onCopy, onLike, onDislike, voiceLang = 'vi-VN', voiceSpeed = 1.0, isReading, onToggleRead }: Props) {
   const handleToggleRead = () => {
-    if (isReading) {
-      if (!onReadMessage) window.speechSynthesis.cancel()
-      setIsReading(false)
-      window.dispatchEvent(new Event('speech-end'))
+    if (onToggleRead) {
+      onToggleRead()
     } else {
-      if (onReadMessage) {
-        setIsReading(true)
-        onReadMessage(message.content)
+      if (isReading) {
+        window.speechSynthesis.cancel()
+        window.dispatchEvent(new Event('speech-end'))
       } else {
         window.speechSynthesis.cancel() // Stop others
         window.dispatchEvent(new Event('speech-end')) // Notify others to stop reading
         const utterance = new SpeechSynthesisUtterance(message.content)
         utterance.lang = voiceLang
         utterance.rate = voiceSpeed
-        utterance.onend = () => { setIsReading(false); window.dispatchEvent(new Event('speech-end')) }
-        utterance.onerror = () => { setIsReading(false); window.dispatchEvent(new Event('speech-end')) }
         window.speechSynthesis.speak(utterance)
-        setIsReading(true)
       }
     }
   }
