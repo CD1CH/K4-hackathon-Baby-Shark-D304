@@ -60,6 +60,17 @@ function App() {
     if (toastTimer.current) window.clearTimeout(toastTimer.current)
   }, [])
 
+  useEffect(() => {
+    const handleSpeechEnd = () => {
+      cancelTTSRef.current = true;
+      if (activeAudioRef.current) {
+        activeAudioRef.current.pause();
+      }
+    };
+    window.addEventListener('speech-end', handleSpeechEnd);
+    return () => window.removeEventListener('speech-end', handleSpeechEnd);
+  }, []);
+
   const notify = (message: string, tone: ToastData['tone'] = 'success') => {
     if (toastTimer.current) window.clearTimeout(toastTimer.current)
     setToast({ id: Date.now(), message, tone })
@@ -252,7 +263,7 @@ function App() {
       header={<TopHeader document={document} theme={theme} onToggleTheme={() => setTheme((value) => value === 'light' ? 'dark' : 'light')} onOpenSidebar={() => setSidebarOpen(true)} onOpenTutor={() => setTutorOpen(true)} />}
       sidebar={<Sidebar groups={documentGroups} selectedId={document.id} expandedGroups={expandedGroups} onToggleGroup={(groupId) => setExpandedGroups((state) => { const next = new Set(state); next.has(groupId) ? next.delete(groupId) : next.add(groupId); return next })} onSelect={selectDocument} onClose={() => setSidebarOpen(false)} />}
       viewer={<DocumentViewer document={document} currentPage={currentPage} zoom={zoom} selectedText={selectedText} onPageChange={changePage} onZoomChange={setZoom} onSelectText={(selection) => { setSelectedText(selection); setCurrentPage(selection.pageNumber) }} onClearSelection={() => setSelectedText(null)} onAskSelected={() => { setTutorOpen(true); ask('Giải thích đoạn vừa chọn') }} onNotify={notify} />}
-      tutor={<TutorPanel document={document} documents={documents} currentPage={currentPage} selectedText={selectedText} messages={messages} isTyping={isTyping} expanded={tutorExpanded} onToggleExpanded={() => setTutorExpanded((value) => !value)} onClose={() => setTutorOpen(false)} onClearChat={() => { if (!messages.length) notify('Tài liệu này chưa có lịch sử.', 'info'); else { setChatByDocument((state) => ({ ...state, [document.id]: [] })); notify('Đã xóa lịch sử tài liệu hiện tại.') } }} onClearSelection={() => setSelectedText(null)} onSelectSource={selectSource} onSend={(question, options) => ask(question, 'normal', true, options)} onCitation={(page) => { changePage(page); setTutorOpen(false); notify(`Đã mở nguồn tại Trang ${page}.`, 'info') }} onSimplify={(message) => ask(questionFor(message), 'simple', false)} onPageOnly={(message) => ask(questionFor(message), 'current-page-only', false)} onCopy={async (message) => { await navigator.clipboard.writeText(message.content); notify('Đã sao chép câu trả lời.') }} onLike={(message) => { updateMessage(message.id, { feedback: { type: 'like' } }); notify('Cảm ơn bạn đã phản hồi.') }} onDislike={(message) => setFeedbackTarget(message.id)} onNotify={notify} autoTTS={autoTTS} onToggleAutoTTS={() => setAutoTTS(v => { const next = !v; if (!next && activeAudioRef.current) activeAudioRef.current.pause(); return next; })} voiceLang={voiceLang} onChangeVoiceLang={setVoiceLang} voiceSpeed={voiceSpeed} onChangeVoiceSpeed={setVoiceSpeed} onOpenSettings={() => setIsSettingsOpen(true)} onReadMessage={voiceLang === 'zh-CN' ? undefined : async (text) => {
+      tutor={<TutorPanel document={document} documents={documents} currentPage={currentPage} selectedText={selectedText} messages={messages} isTyping={isTyping} expanded={tutorExpanded} onToggleExpanded={() => setTutorExpanded((value) => !value)} onClose={() => setTutorOpen(false)} onClearChat={() => { if (!messages.length) notify('Tài liệu này chưa có lịch sử.', 'info'); else { setChatByDocument((state) => ({ ...state, [document.id]: [] })); notify('Đã xóa lịch sử tài liệu hiện tại.') } }} onClearSelection={() => setSelectedText(null)} onSelectSource={selectSource} onSend={(question, options) => ask(question, 'normal', true, options)} onCitation={(page) => { changePage(page); setTutorOpen(false); notify(`Đã mở nguồn tại Trang ${page}.`, 'info') }} onSimplify={(message) => ask(questionFor(message), 'simple', false)} onPageOnly={(message) => ask(questionFor(message), 'current-page-only', false)} onCopy={async (message) => { await navigator.clipboard.writeText(message.content); notify('Đã sao chép câu trả lời.') }} onLike={(message) => { updateMessage(message.id, { feedback: { type: 'like' } }); notify('Cảm ơn bạn đã phản hồi.') }} onDislike={(message) => setFeedbackTarget(message.id)} onNotify={notify} autoTTS={autoTTS} onToggleAutoTTS={() => setAutoTTS(v => { const next = !v; if (!next && activeAudioRef.current) { activeAudioRef.current.pause(); } else if (next && activeAudioRef.current) { activeAudioRef.current.play().catch(console.error); } return next; })} voiceLang={voiceLang} onChangeVoiceLang={setVoiceLang} voiceSpeed={voiceSpeed} onChangeVoiceSpeed={setVoiceSpeed} onOpenSettings={() => setIsSettingsOpen(true)} onReadMessage={voiceLang === 'zh-CN' ? undefined : async (text) => {
         playAudioQueue(text);
       }} />}
     />
