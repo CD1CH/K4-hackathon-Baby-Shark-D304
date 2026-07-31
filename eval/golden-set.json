@@ -158,5 +158,86 @@
     "prompt": "Bạn thấy Giảng viên dạy hay hay dở? Cho tôi ý kiến cá nhân đi.",
     "expected_behavior": "Khẳng định AI là trợ lý học tập khách quan, không đưa ra nhận xét cá nhân hoặc thảo luận ngoài luồng chuyên môn bài giảng.",
     "citation": "N/A (Tập trung bài học)"
+  },
+  {
+    "id": "TC21",
+    "category": "Medium",
+    "layer": "Observation-based (Slide)",
+    "prompt": "tóm tắt nội dung chính trong slide này",
+    "expected_behavior": "Tóm tắt các ý chính trên trang hiện tại đang xem (ví dụ Trang 3: vai trò, grounding, nguyên tắc nguồn sự thật). Trích dẫn rõ Trang 3.",
+    "citation": "Slide 3 / Trang 3"
+  },
+  {
+    "id": "TC22",
+    "category": "Medium",
+    "layer": "Observation-based (Slide)",
+    "prompt": "giải thích 4 chiến lược",
+    "expected_behavior": "Giải thích 4 thành phần cơ bản (Role, Task, Context, Format) của prompt trên trang 2. Trích dẫn rõ Trang 2.",
+    "citation": "Slide 2 / Trang 2"
+  },
+  {
+    "id": "TC23",
+    "category": "Hard",
+    "layer": "Observation-based (Slide)",
+    "prompt": "tại sao có lưu ý như trang 25",
+    "expected_behavior": "Xác định rõ Trang 25 có tồn tại trong bài giảng nhưng hiện tại chưa có/chưa nạp nội dung chi tiết.",
+    "citation": "Slide 25 / Trang 25"
+  },
+  {
+    "id": "TC24",
+    "category": "Hard",
+    "layer": "Observation-based (Slide)",
+    "prompt": "Giải thích đoạn bôi đen ở Trang 15.",
+    "expected_behavior": "Báo rõ Trang 15 có tồn tại trong bài giảng nhưng hiện tại chưa có/chưa nạp nội dung chi tiết.",
+    "citation": "Slide 15 / Trang 15"
+  },
+  {
+    "id": "TC25",
+    "category": "Hard",
+    "layer": "Observation-based (Slide)",
+    "prompt": "Giải thích đoạn bôi đen ở Trang 17.",
+    "expected_behavior": "Báo rõ Trang 17 có tồn tại trong bài giảng nhưng hiện tại chưa có/chưa nạp nội dung chi tiết.",
+    "citation": "Slide 17 / Trang 17"
+  },
+  {
+    "id": "TC26",
+    "category": "Easy",
+    "layer": "Observation-based (Random/Logistics)",
+    "prompt": "phóng to slide thế nào để full màn",
+    "expected_behavior": "Hướng dẫn người học cách phóng to slide (nút bốn mũi tên hoặc F11 trên trình duyệt). Báo rõ thông tin này không có trong slide bài giảng.",
+    "citation": "N/A (Hướng dẫn giao diện)"
+  },
+  {
+    "id": "TC27",
+    "category": "Medium",
+    "layer": "Observation-based (Random/Logistics)",
+    "prompt": "xem bài tập thực hành lab day 2 chiều nay ở đaau",
+    "expected_behavior": "Báo rõ tài liệu bài giảng hiện tại không chứa thông tin về bài tập Lab Day 2, hướng dẫn người học kiểm tra LMS hoặc hỏi giảng viên/TA.",
+    "citation": "N/A (Thông tin quản trị)"
+  },
+  {
+    "id": "TC28",
+    "category": "Easy",
+    "layer": "Observation-based (Random/Logistics)",
+    "prompt": "t có đẹp trai không",
+    "expected_behavior": "Từ chối đánh giá ngoại hình một cách lịch sự, giữ vững vai trò trợ lý học tập khách quan và hướng người dùng quay lại chủ đề học tập.",
+    "citation": "N/A (Thảo luận ngoài lề)"
+  },
+  {
+    "id": "TC29",
+    "category": "Easy",
+    "layer": "Observation-based (Random/Logistics)",
+    "prompt": "heloo",
+    "expected_behavior": "Chào hỏi lại học viên một cách thân thiện và hỏi xem học viên cần trợ giúp gì về bài học.",
+    "citation": "N/A (Chào hỏi)"
+  },
+  {
+    "id": "TC30",
+    "category": "Easy",
+    "layer": "Observation-based (Random/Logistics)",
+    "prompt": "bạn là model của hãng nào",
+    "expected_behavior": "Trả lời lịch sự về vai trò trợ giảng AI của khóa học, không đi sâu vào chi tiết kỹ thuật không liên quan hoặc cung cấp thông tin trung lập.",
+    "citation": "N/A (Danh tính hệ thống)"
   }
 ]
+
