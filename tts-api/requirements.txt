@@ -23,3 +23,5 @@ pydub
 soundfile
 tqdm
 mlx>=0.27.0
+vieneu
+onnxruntime-silicon

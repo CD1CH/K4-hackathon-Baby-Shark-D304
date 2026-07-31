@@ -9,7 +9,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from app.tts.inference import TTSEngine, SPEAKERS
+from app.tts.inference import TTSEngine
 
 router   = APIRouter()
 engine   = TTSEngine()
