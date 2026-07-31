@@ -1,7 +1,7 @@
 import { Bot, Eraser, History, Maximize2, Minimize2, ShieldCheck, Sparkles, X, Volume2, VolumeX } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { suggestedQuestions } from '../data/documents'
-import type { ChatItem, SelectedText, TutorDocument } from '../types'
+import type { ChatItem, SelectedText, TutorDocument, ToastData } from '../types'
 import { ChatMessage } from './ChatMessage'
 import { SuggestedQuestionChips } from './SuggestedQuestionChips'
 import { TutorContextCard } from './TutorContextCard'
@@ -28,7 +28,7 @@ type Props = {
   onLike: (message: ChatItem) => void
   onDislike: (message: ChatItem) => void
   onSelectSource: (documentId: string, page: number) => void
-  onNotify: (message: string, tone?: 'success' | 'error' | 'info') => void
+  onNotify: (message: string, tone?: ToastData['tone']) => void
   autoTTS: boolean
   onToggleAutoTTS: () => void
   voiceLang: string

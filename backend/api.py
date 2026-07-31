@@ -139,11 +139,11 @@ async def tts(req: TtsRequest):
     try:
         async with httpx.AsyncClient(timeout=180.0) as client:
             if req.voice_id:
-                payload = {"voice_id": req.voice_id, "text": req.text, "num_step": 32, "speed": 1.0}
+                payload = {"voice_id": req.voice_id, "text": req.text, "num_step": 16, "speed": 1.0}
                 path = "/tts/synthesize"
             else:
                 instruct = req.voice
-                payload = {"text": req.text, "num_step": 32, "speed": 1.0, "instruct": instruct}
+                payload = {"text": req.text, "num_step": 16, "speed": 1.0, "instruct": instruct}
                 path = "/tts/design"
             
             resp = await client.post(f"{TTS_BASE_URL}{path}", json=payload)

@@ -8,8 +8,7 @@ import { TopHeader } from './components/TopHeader'
 import { TutorPanel } from './components/TutorPanel'
 import { VoiceSettingsModal } from './components/VoiceSettingsModal'
 import { documentGroups, documents } from './data/documents'
-import { mockTutorResponse } from './mockTutor'
-import type { AnswerMode, ChatItem, SelectedText, Theme, ToastData } from './types'
+import type { ChatItem, SelectedText, Theme, ToastData } from './types'
 
 const id = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 
@@ -43,6 +42,7 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   const activeAudioRef = useRef<HTMLAudioElement | null>(null)
+  const cancelTTSRef = useRef<boolean>(false)
   const responseTimer = useRef<number | null>(null)
   const toastTimer = useRef<number | null>(null)
 
@@ -68,7 +68,7 @@ function App() {
 
   const append = (documentId: string, message: ChatItem) => setChatByDocument((state) => ({ ...state, [documentId]: [...(state[documentId] ?? []), message] }))
 
-  const ask = async (question: string, mode: 'normal' | 'simple' | 'current-page-only' = 'normal', addUser = true, options?: { isVoice?: boolean; lang?: string }) => {
+  const ask = async (question: string, mode: 'normal' | 'simple' | 'current-page-only' = 'normal', addUser = true, _options?: { isVoice?: boolean; lang?: string }) => {
     if (!question.trim() || isTyping) return
     const sourceDocument = document
     const sourcePage = currentPage
@@ -120,31 +120,7 @@ function App() {
       updateMessage(tutorMessageId, { content: apiResponseText })
       
       if (autoTTS) {
-        try {
-          if (activeAudioRef.current) activeAudioRef.current.pause()
-          
-          const res = await fetch('http://localhost:8000/api/tts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              text: apiResponseText,
-              lang: voiceLang.includes('en') ? 'en' : 'vi',
-              voice: voice,
-              voice_id: voiceType === 'cloned' ? voiceId : null
-            })
-          })
-          if (res.ok) {
-            const blob = await res.blob()
-            const url = URL.createObjectURL(blob)
-            const audio = new Audio(url)
-            activeAudioRef.current = audio
-            audio.onended = () => URL.revokeObjectURL(url)
-            audio.onerror = () => URL.revokeObjectURL(url)
-            audio.play()
-          }
-        } catch (err) {
-          console.error('Failed to auto-play TTS', err)
-        }
+        playAudioQueue(apiResponseText)
       }
     } catch (e) {
       notify('Lỗi kết nối tới AI Tutor.', 'error')
@@ -179,6 +155,83 @@ function App() {
     notify(`Đã mở ${nextDocument.shortName} · Trang ${page}.`, 'info')
   }
 
+  const playAudioQueue = async (text: string) => {
+    cancelTTSRef.current = true;
+    if (activeAudioRef.current) activeAudioRef.current.pause();
+    window.speechSynthesis.cancel();
+    window.dispatchEvent(new Event('speech-end'));
+
+    if (voiceLang === 'zh-CN') {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      utterance.rate = voiceSpeed;
+      window.speechSynthesis.speak(utterance);
+      return;
+    }
+
+    await new Promise(r => setTimeout(r, 50));
+    cancelTTSRef.current = false;
+
+    const chunks = text.match(/[^.?!;:\n]+[.?!;:\n]+/g) || [text];
+    const validChunks = chunks.map(c => c.trim()).filter(c => c.length > 0);
+    
+    if (validChunks.length === 0) {
+      window.dispatchEvent(new Event('speech-end'));
+      return;
+    }
+
+    const fetchAudio = async (chunkText: string) => {
+      try {
+        const res = await fetch('http://localhost:8000/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: chunkText,
+            lang: voiceLang.includes('en') ? 'en' : 'vi',
+            voice,
+            voice_id: voiceType === 'cloned' ? voiceId : null
+          })
+        });
+        if (res.ok) return await res.blob();
+      } catch (e) {
+        console.error(e);
+      }
+      return null;
+    };
+
+    let nextBlobPromise = fetchAudio(validChunks[0]);
+
+    for (let i = 0; i < validChunks.length; i++) {
+      if (cancelTTSRef.current) break;
+
+      const currentBlob = await nextBlobPromise;
+      if (i + 1 < validChunks.length) {
+        nextBlobPromise = fetchAudio(validChunks[i + 1]);
+      }
+
+      if (!currentBlob || cancelTTSRef.current) continue;
+
+      const url = URL.createObjectURL(currentBlob);
+      const audio = new Audio(url);
+      activeAudioRef.current = audio;
+
+      await new Promise<void>((resolve) => {
+        audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
+        audio.onerror = () => { URL.revokeObjectURL(url); resolve(); };
+        if (!cancelTTSRef.current) {
+           audio.play().catch(() => resolve());
+        } else {
+           URL.revokeObjectURL(url);
+           resolve();
+        }
+      });
+    }
+
+    if (!cancelTTSRef.current) {
+      window.dispatchEvent(new Event('speech-end'));
+    }
+  }
+
   const updateMessage = (messageId: string, patch: Partial<ChatItem>) => setChatByDocument((state) => ({
     ...state,
     [document.id]: (state[document.id] ?? []).map((message) => message.id === messageId ? { ...message, ...patch } : message)
@@ -199,30 +252,8 @@ function App() {
       header={<TopHeader document={document} theme={theme} onToggleTheme={() => setTheme((value) => value === 'light' ? 'dark' : 'light')} onOpenSidebar={() => setSidebarOpen(true)} onOpenTutor={() => setTutorOpen(true)} />}
       sidebar={<Sidebar groups={documentGroups} selectedId={document.id} expandedGroups={expandedGroups} onToggleGroup={(groupId) => setExpandedGroups((state) => { const next = new Set(state); next.has(groupId) ? next.delete(groupId) : next.add(groupId); return next })} onSelect={selectDocument} onClose={() => setSidebarOpen(false)} />}
       viewer={<DocumentViewer document={document} currentPage={currentPage} zoom={zoom} selectedText={selectedText} onPageChange={changePage} onZoomChange={setZoom} onSelectText={(selection) => { setSelectedText(selection); setCurrentPage(selection.pageNumber) }} onClearSelection={() => setSelectedText(null)} onAskSelected={() => { setTutorOpen(true); ask('Giải thích đoạn vừa chọn') }} onNotify={notify} />}
-      tutor={<TutorPanel document={document} documents={documents} currentPage={currentPage} selectedText={selectedText} messages={messages} isTyping={isTyping} expanded={tutorExpanded} onToggleExpanded={() => setTutorExpanded((value) => !value)} onClose={() => setTutorOpen(false)} onClearChat={() => { if (!messages.length) notify('Tài liệu này chưa có lịch sử.', 'info'); else { setChatByDocument((state) => ({ ...state, [document.id]: [] })); notify('Đã xóa lịch sử tài liệu hiện tại.') } }} onClearSelection={() => setSelectedText(null)} onSelectSource={selectSource} onSend={(question, options) => ask(question, 'normal', true, options)} onCitation={(page) => { changePage(page); setTutorOpen(false); notify(`Đã mở nguồn tại Trang ${page}.`, 'info') }} onSimplify={(message) => ask(questionFor(message), 'simple', false)} onPageOnly={(message) => ask(questionFor(message), 'current-page-only', false)} onCopy={async (message) => { await navigator.clipboard.writeText(message.content); notify('Đã sao chép câu trả lời.') }} onLike={(message) => { updateMessage(message.id, { feedback: { type: 'like' } }); notify('Cảm ơn bạn đã phản hồi.') }} onDislike={(message) => setFeedbackTarget(message.id)} onNotify={notify} autoTTS={autoTTS} onToggleAutoTTS={() => setAutoTTS(v => { const next = !v; if (!next && activeAudioRef.current) activeAudioRef.current.pause(); return next; })} voiceLang={voiceLang} onChangeVoiceLang={setVoiceLang} voiceSpeed={voiceSpeed} onChangeVoiceSpeed={setVoiceSpeed} onOpenSettings={() => setIsSettingsOpen(true)} onReadMessage={async (text) => {
-        try {
-          if (activeAudioRef.current) activeAudioRef.current.pause();
-          window.dispatchEvent(new Event('speech-end'));
-          const res = await fetch('http://localhost:8000/api/tts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              text,
-              lang: voiceLang.includes('en') ? 'en' : 'vi',
-              voice,
-              voice_id: voiceType === 'cloned' ? voiceId : null
-            })
-          });
-          if (res.ok) {
-            const blob = await res.blob();
-            const url = URL.createObjectURL(blob);
-            const audio = new Audio(url);
-            activeAudioRef.current = audio;
-            audio.onended = () => { URL.revokeObjectURL(url); window.dispatchEvent(new Event('speech-end')); };
-            audio.onerror = () => { URL.revokeObjectURL(url); window.dispatchEvent(new Event('speech-end')); };
-            audio.play();
-          }
-        } catch (err) { console.error('Failed to play audio manually', err); window.dispatchEvent(new Event('speech-end')); }
+      tutor={<TutorPanel document={document} documents={documents} currentPage={currentPage} selectedText={selectedText} messages={messages} isTyping={isTyping} expanded={tutorExpanded} onToggleExpanded={() => setTutorExpanded((value) => !value)} onClose={() => setTutorOpen(false)} onClearChat={() => { if (!messages.length) notify('Tài liệu này chưa có lịch sử.', 'info'); else { setChatByDocument((state) => ({ ...state, [document.id]: [] })); notify('Đã xóa lịch sử tài liệu hiện tại.') } }} onClearSelection={() => setSelectedText(null)} onSelectSource={selectSource} onSend={(question, options) => ask(question, 'normal', true, options)} onCitation={(page) => { changePage(page); setTutorOpen(false); notify(`Đã mở nguồn tại Trang ${page}.`, 'info') }} onSimplify={(message) => ask(questionFor(message), 'simple', false)} onPageOnly={(message) => ask(questionFor(message), 'current-page-only', false)} onCopy={async (message) => { await navigator.clipboard.writeText(message.content); notify('Đã sao chép câu trả lời.') }} onLike={(message) => { updateMessage(message.id, { feedback: { type: 'like' } }); notify('Cảm ơn bạn đã phản hồi.') }} onDislike={(message) => setFeedbackTarget(message.id)} onNotify={notify} autoTTS={autoTTS} onToggleAutoTTS={() => setAutoTTS(v => { const next = !v; if (!next && activeAudioRef.current) activeAudioRef.current.pause(); return next; })} voiceLang={voiceLang} onChangeVoiceLang={setVoiceLang} voiceSpeed={voiceSpeed} onChangeVoiceSpeed={setVoiceSpeed} onOpenSettings={() => setIsSettingsOpen(true)} onReadMessage={voiceLang === 'zh-CN' ? undefined : async (text) => {
+        playAudioQueue(text);
       }} />}
     />
     <FeedbackModal isOpen={Boolean(feedbackTarget)} onClose={() => setFeedbackTarget(null)} onSubmit={submitFeedback} />

@@ -1,4 +1,4 @@
-import { CornerDownLeft, Send, Sparkles, Mic, MicOff, Globe } from 'lucide-react'
+import { CornerDownLeft, Send, Sparkles, Mic, MicOff } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
 export type VoiceOptions = { isVoice?: boolean; lang?: string }

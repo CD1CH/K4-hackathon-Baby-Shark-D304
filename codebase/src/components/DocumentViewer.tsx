@@ -6,8 +6,8 @@ import type { SelectedText, TutorDocument } from '../types'
 import { DocumentToolbar, type ViewerTool } from './DocumentToolbar'
 import { PageNavigation } from './PageNavigation'
 
-// Setup pdf.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// Setup pdf.js worker using public folder file (most robust method)
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 type Props = {
   document: TutorDocument
@@ -24,6 +24,7 @@ type Props = {
 
 export function DocumentViewer(props: Props) {
   const [activeTool, setActiveTool] = useState<ViewerTool>('read')
+  const [pdfError, setPdfError] = useState<Error | null>(null);
   const viewerRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const pageRefs = useRef<Map<number, HTMLDivElement>>(new Map())
@@ -95,7 +96,7 @@ export function DocumentViewer(props: Props) {
     props.onNotify('Đã tải xuống tài liệu.')
   }
 
-  const pdfUrl = encodeURI(`/slides/${props.document.name}`)
+  const pdfUrl = `/slides/${props.document.name}`
 
   return (
     <div ref={viewerRef} className="flex h-[calc(100dvh-64px)] min-w-0 flex-col bg-[#edf2f8] dark:bg-slate-900 relative">
@@ -106,7 +107,8 @@ export function DocumentViewer(props: Props) {
           <Document 
             file={pdfUrl} 
             loading={<div className="p-10 text-slate-500 font-medium">Đang tải PDF...</div>}
-            error={<div className="p-10 text-red-500 font-medium">Lỗi không thể tải file PDF.</div>}
+            error={<div className="p-10 text-red-500 font-medium max-w-lg break-words">Lỗi tải PDF: {pdfError?.message || "Không xác định"}</div>}
+            onLoadError={(err) => { console.error("PDF Load Error:", err); setPdfError(err); }}
             onLoadSuccess={() => {
               // Re-attach observers when document loads and renders
               setTimeout(() => {
@@ -118,7 +120,7 @@ export function DocumentViewer(props: Props) {
               }, 1000)
             }}
           >
-            {Array.from(new Array(props.document.totalPages), (el, index) => (
+            {Array.from(new Array(props.document.totalPages), (_, index) => (
               <div 
                 key={`page_${index + 1}`} 
                 ref={(el) => {
