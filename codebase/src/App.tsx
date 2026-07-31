@@ -97,6 +97,13 @@ function App() {
     
     if (addUser) append(sourceDocument.id, userMessage)
     
+    // Prime SpeechSynthesis engine synchronously during user gesture to prevent browser blocking autoTTS later
+    if (autoTTS && voiceType !== 'cloned') {
+      const primeUtterance = new SpeechSynthesisUtterance('');
+      primeUtterance.volume = 0;
+      window.speechSynthesis.speak(primeUtterance);
+    }
+    
     setIsTyping(true)
     
     try {
@@ -175,6 +182,9 @@ function App() {
     cancelTTSRef.current = true;
     if (activeAudioRef.current) activeAudioRef.current.pause();
     window.speechSynthesis.cancel();
+    
+    // Workaround for browser bug: speak() immediately after cancel() can silently fail
+    await new Promise(r => setTimeout(r, 50));
 
     if (voiceType !== 'cloned') {
       await new Promise<void>((resolve) => {

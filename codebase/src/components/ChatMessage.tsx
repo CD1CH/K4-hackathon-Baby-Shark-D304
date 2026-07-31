@@ -87,8 +87,8 @@ export function ChatMessage({ message, disabled, onCitation, onSimplify, onPageO
                             <FileCode2 size={20} />
                           </div>
                           <div>
-                            <h4 className="font-bold text-slate-800 dark:text-slate-200">Bài tập / Flashcard</h4>
-                            <p className="text-[11px] font-medium text-slate-500">Định dạng HTML tương tác</p>
+                            <h4 className="font-bold text-slate-800 dark:text-slate-200">Học liệu Tương tác</h4>
+                            <p className="text-[11px] font-medium text-slate-500">Bài tập, Flashcard, Sơ đồ tư duy (HTML)</p>
                           </div>
                         </div>
                       </div>

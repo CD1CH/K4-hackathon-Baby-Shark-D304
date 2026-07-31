@@ -137,6 +137,9 @@ export function VoiceSettingsModal({
     const text = language === 'en' ? 'Hello, this is a test voice.' : 'Xin chào, đây là giọng nói thử nghiệm.'
     
     if (voiceType === 'default') {
+      window.speechSynthesis.cancel()
+      await new Promise(r => setTimeout(r, 50))
+      
       const utterance = new SpeechSynthesisUtterance(text)
       utterance.lang = language === 'en' ? 'en-US' : 'vi-VN'
       utterance.onend = () => setIsPlaying(false)

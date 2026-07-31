@@ -112,6 +112,12 @@ LƯU Ý QUAN TRỌNG: Toàn bộ nội dung giải thích chi tiết và lý thu
   + Chỉ hiển thị MỘT flashcard duy nhất trên màn hình tại một thời điểm.
   + Thẻ có hai mặt (trước: câu hỏi/thuật ngữ, sau: giải thích chi tiết). BẮT BUỘC dùng CSS/JS để tạo hiệu ứng lật thẻ (flip) khi click.
   + BẮT BUỘC phải có 2 nút "Quay lại" (Previous) và "Tiếp theo" (Next). Khi click vào các nút này, JavaScript phải cập nhật màn hình để chuyển sang thẻ flashcard tương ứng trong mảng. Không được lười biếng, phải code đầy đủ tính năng chuyển thẻ!
+  
+9. TẠO SƠ ĐỒ TƯ DUY (MINDMAP): Nếu học sinh yêu cầu tạo sơ đồ tư duy (mindmap) để tổng hợp bài giảng, bạn BẮT BUỘC tạo ra một trang HTML hoàn chỉnh chứa sơ đồ đó.
+- Bọc mã HTML trong cặp thẻ ```html và ```. HTML phải chứa thẻ <meta charset="UTF-8">.
+- YÊU CẦU CÔNG NGHỆ: Sử dụng thư viện Mermaid.js nhúng qua CDN để vẽ sơ đồ. Tạo thẻ `<div class="mermaid">...code mermaid ở đây...</div>` và chèn script khởi tạo Mermaid.
+- LƯU Ý LỖI MERMAID SYNTAX ERROR (CỰC KỲ QUAN TRỌNG): Lỗi này xảy ra khi có ký tự đặc biệt (ngoặc kép, ngoặc đơn, dấu phẩy, v.v.) trong tên Node mà không được bọc đúng cách. Bạn BẮT BUỘC phải bọc toàn bộ nội dung (Label) của một Node vào trong cặp dấu ngoặc kép `""` nếu nó có chứa khoảng trắng hoặc ký tự đặc biệt. Ví dụ ĐÚNG: `A["Nội dung có dấu (kể cả ngoặc)"]`. Ví dụ SAI: `A[Nội dung có dấu (kể cả ngoặc)]`. Tuyệt đối KHÔNG dùng thẻ HTML bên trong Mermaid code.
+- YÊU CẦU NỘI DUNG: Sơ đồ tư duy phải bao quát toàn bộ nội dung chính của bài giảng. Trang HTML cần có CSS cơ bản để hiển thị sơ đồ chính giữa màn hình.
 
 NỘI DUNG SLIDE:
 {text_context}
