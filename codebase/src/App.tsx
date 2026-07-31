@@ -81,7 +81,7 @@ function App() {
 
   const append = (documentId: string, message: ChatItem) => setChatByDocument((state) => ({ ...state, [documentId]: [...(state[documentId] ?? []), message] }))
 
-  const ask = async (question: string, mode: 'normal' | 'simple' | 'current-page-only' = 'normal', addUser = true, _options?: { isVoice?: boolean; lang?: string }) => {
+  const ask = async (question: string, mode: AnswerMode = 'normal', addUser = true, _options?: { isVoice?: boolean; lang?: string }) => {
     if (!question.trim() || isTyping) return
     const sourceDocument = document
     const sourcePage = currentPage

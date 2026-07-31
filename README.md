@@ -29,3 +29,37 @@ Dự án Hệ thống Trợ lý Học tập Thông minh bằng Trí tuệ Nhân 
 *   **AI Models:**
     *   **LLM:** Tích hợp mô hình Ngôn ngữ Lớn qua cổng OpenRouter (Hỗ trợ GPT, Claude, Gemini...).
     *   **Âm thanh:** Web Speech API, Hệ thống Voice Clone & TTS nội địa (VieNeu-TTS-v3) qua API độc lập.
+
+## 🔄 Quy trình Hoạt động (Workflow)
+
+```mermaid
+flowchart TD
+    subgraph Client [Giao diện Người dùng - React Frontend]
+        A[Học sinh chọn Trang Slide / PDF] --> B[Nhập câu hỏi hoặc Yêu cầu học tập]
+        B --> C{Phân loại Yêu cầu}
+        
+        C -->|Hỏi đáp / Tóm tắt| D[Đóng gói Ngữ cảnh trang + Nội dung câu hỏi]
+        C -->|Tạo Quiz / Flashcard / Mindmap| E[Gửi Yêu cầu Sinh Học liệu Tương tác]
+        C -->|Đọc văn bản / Clone Voice| F[Gửi Yêu cầu Phát Âm thanh]
+    end
+
+    subgraph CoreBackend [Backend Central - FastAPI :8000]
+        D --> G[Đọc & Trích xuất dữ liệu từ PDF bằng pypdf]
+        G --> H[Ghép System Prompt + Ngữ cảnh Slide]
+        H --> I[Gọi LLM xử lý qua OpenRouter API]
+        
+        E --> J[LLM sinh mã HTML Sandbox chứa CSS & JS]
+    end
+
+    subgraph AudioBackend [TTS Engine - FastAPI :8002]
+        F --> K{Lựa chọn Giọng đọc}
+        K -->|Giọng Mặc định| L[Kích hoạt Web Speech API của Trình duyệt]
+        K -->|Giọng Clone| M[Tổng hợp giọng nói VieNeu-TTS-v3 qua Voice ID]
+    end
+
+    subgraph Output [Kết quả Phản hồi]
+        I -->|Streaming Text| N[Hiển thị Markdown trả lời trong Chat Panel]
+        J -->|HTML Code Block| O[Hiển thị Card Học liệu -> Mở Popup xem / Tải về]
+        M -->|File WAV Audio| P[Phát âm thanh trực tiếp qua HTML5 Audio Player]
+    end
+```

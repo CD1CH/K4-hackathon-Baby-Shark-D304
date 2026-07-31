@@ -101,7 +101,6 @@ export function DocumentViewer(props: Props) {
   return (
     <div ref={viewerRef} className="flex h-[calc(100dvh-64px)] min-w-0 flex-col bg-[#edf2f8] dark:bg-slate-900 relative">
       <DocumentToolbar currentPage={props.currentPage} totalPages={props.document.totalPages} zoom={props.zoom} activeTool={activeTool} hasSelection={Boolean(props.selectedText)} onToolChange={setActiveTool} onZoomChange={props.onZoomChange} onDownload={download} onFullscreen={async () => window.document.fullscreenElement ? window.document.exitFullscreen() : viewerRef.current?.requestFullscreen()} onUndo={props.onClearSelection} />
-      
       <div ref={containerRef} className="panel-scroll min-h-0 flex-1 overflow-y-auto relative pb-32">
         <div className="mx-auto flex flex-col items-center gap-8 py-8 px-4">
           <Document 
@@ -151,3 +150,4 @@ export function DocumentViewer(props: Props) {
     </div>
   )
 }
+

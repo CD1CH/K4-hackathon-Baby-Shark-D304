@@ -17,6 +17,11 @@ export async function askTutorAPI(
   const page = getDocumentPage(document, currentPage)
   const slideText = page.blocks.map(b => b.text).join('\n')
 
+  const fullSlideText = document.pages.map((p) => {
+    const blocksText = p.blocks.map((b) => (b.heading ? `[${b.heading}]\n${b.text}` : b.text)).join('\n')
+    return `--- TRANG ${p.pageNumber}: ${p.title} ---\n${blocksText}`
+  }).join('\n\n')
+
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -27,6 +32,7 @@ export async function askTutorAPI(
         messages: apiMessages,
         pdf_name: document.name,
         slide_text: slideText,
+        full_document_text: fullSlideText,
         current_page: currentPage
       })
     })
