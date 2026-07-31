@@ -50,6 +50,7 @@ class TTSEngine:
         import os
         voice_id = str(uuid.uuid4())
         perm_path = f"app/tts/voices/{voice_id}.wav"
+        os.makedirs(os.path.dirname(perm_path), exist_ok=True)
         shutil.copy(ref_audio_path, perm_path)
         
         # Store the path to the ref audio
